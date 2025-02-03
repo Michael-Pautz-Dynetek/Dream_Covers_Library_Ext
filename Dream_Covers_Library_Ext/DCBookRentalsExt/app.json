@@ -1,0 +1,38 @@
+{
+  "id": "042f67c0-88f9-4487-8ba1-83ce787ecbdc",
+  "name": "DCBookRentalsExt",
+  "publisher": "Default Publisher",
+  "version": "1.0.0.0",
+  "brief": "",
+  "description": "",
+  "privacyStatement": "",
+  "EULA": "",
+  "help": "",
+  "url": "",
+  "logo": "",
+  "dependencies": [
+    {
+      "id": "c58e86d9-5cbc-4caf-bd33-959316dbfb86",
+      "name": "DreamCoversLibraryExt",
+      "publisher": "Default Publisher",
+      "version": "1.0.0.0"
+    }],
+  "screenshots": [],
+  "platform": "1.0.0.0",
+  "application": "25.0.0.0",
+  "idRanges": [
+    {
+      "from": 50400,
+      "to": 50449
+    }
+  ],
+  "resourceExposurePolicy": {
+    "allowDebugging": true,
+    "allowDownloadingSource": true,
+    "includeSourceInSymbolFile": true
+  },
+  "runtime": "14.0",
+  "features": [
+    "NoImplicitWith"
+  ]
+}
