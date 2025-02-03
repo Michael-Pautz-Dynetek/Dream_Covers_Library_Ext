@@ -20,7 +20,7 @@ pageextension 50410 "Customer Card Ext" extends "Customer Card"
             {
                 Caption = 'Probation Date';
                 ToolTip = 'Specifies the end date of the customers probation period.';
-                Editable = false;
+                //Editable = false;
             }
         }
     }

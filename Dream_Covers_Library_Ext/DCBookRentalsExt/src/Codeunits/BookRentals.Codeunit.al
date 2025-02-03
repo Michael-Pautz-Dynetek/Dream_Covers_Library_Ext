@@ -23,10 +23,8 @@ codeunit 50401 "Book Rentals"
     begin
         if Confirm(ConfirmReturn, false, CurrentLibrary.Title) then begin
             if Customer.Get(CurrentLibrary."Customer No.") then begin
-                if (Customer."Highest Overdue Level" = OverdueLevels::Extreme) AND (Customer."Probation Date" = 0D) then begin
-                    Customer.Validate("Highest Overdue Level", OverdueLevels::Extreme);
+                if (Customer."Highest Overdue Level" = OverdueLevels::Extreme) AND (Customer."Probation Date" = 0D) then
                     Customer.Validate("Probation Date", CalcDate('<+6M>', Today));
-                end;
                 Customer.Modify(true);
             end;
             CurrentLibrary.Validate(Rented, false);
@@ -35,7 +33,8 @@ codeunit 50401 "Book Rentals"
             CurrentLibrary.Validate("Weeks Overdue", 0);
             CurrentLibrary.Validate("Overdue Level", OverdueLevels::" ");
             CurrentLibrary.Modify(true);
-            UpdateHighestOverdueLevel(Customer);
+            if Customer."Highest Overdue Level" <> OverdueLevels::Extreme then
+                UpdateHighestOverdueLevel(Customer);
         end;
     end;
 
@@ -146,7 +145,6 @@ codeunit 50401 "Book Rentals"
         if Customer.Get(Library."Customer No.") then begin
             if (Today < Customer."Probation Date") AND (Customer."Highest Overdue Level" = OverdueLevels::Extreme) then
                 exit;
-            Customer.Validate("Highest Overdue Level", OverdueLevels::" ");
             if Library."Overdue Level".AsInteger() > Customer."Highest Overdue Level".AsInteger() then
                 Customer.Validate("Highest Overdue Level", Library."Overdue Level");
             Customer.Modify(true);
