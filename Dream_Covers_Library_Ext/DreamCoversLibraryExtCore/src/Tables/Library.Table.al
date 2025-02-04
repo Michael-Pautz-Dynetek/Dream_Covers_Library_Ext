@@ -5,12 +5,11 @@ table 50200 Library
 
     fields
     {
-        field(10; "Book No."; Integer)
+        field(10; "Book No."; Code[20])
         {
             DataClassification = CustomerContent;
             Caption = 'Book No.';
             ToolTip = 'Identification number of the book.';
-            AutoIncrement = true;
         }
 
         field(20; Title; Text[100])
@@ -100,10 +99,10 @@ table 50200 Library
 
         field(140; "Customer Name"; Text[100])
         {
-            Caption = 'Client Name';
+            Caption = 'Customer Name';
             FieldClass = FlowField;
             CalcFormula = lookup(Customer.Name where("No." = field("Customer No.")));
-            ToolTip = 'Specifies the client who rented the book.';
+            ToolTip = 'Specifies the customer who rented the book.';
         }
 
         field(150; "Amount Rented"; Integer)
@@ -131,7 +130,11 @@ table 50200 Library
 
     trigger OnInsert()
     begin
-
+        if "Book No." = '' then begin
+            GeneralSetup.Get(2);
+            GeneralSetup.TestField("Book Nos.");
+            Validate("Book No.", NoSeriesMgt.GetNextNo(GeneralSetup."Book Nos."));
+        end;
     end;
 
     trigger OnModify()
@@ -160,5 +163,9 @@ table 50200 Library
         Library.Validate(Sequel, '');
         Library.Modify(true);
     end;
+
+    var
+        GeneralSetup: Record "Library General Setup";
+        NoSeriesMgt: Codeunit "No. Series";
 
 }

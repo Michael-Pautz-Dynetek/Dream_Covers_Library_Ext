@@ -78,7 +78,4 @@ tableextension 50407 "Customers Ext" extends Customer
         else
             Validate("Rent Allowed", false);
     end;
-
-    var
-        myInt: Integer;
 }

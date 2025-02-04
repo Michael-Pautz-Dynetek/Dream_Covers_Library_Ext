@@ -6,7 +6,7 @@ page 50201 "Book List"
     SourceTable = Library;
     Caption = 'Book List';
     CardPageId = "Book Details Card";
-    InsertAllowed = false;
+    //InsertAllowed = false;
     ModifyAllowed = false;
 
     layout
@@ -17,47 +17,39 @@ page 50201 "Book List"
             {
                 field(Title; Rec.Title)
                 {
-                    ApplicationArea = All;
+                    ToolTip = 'Specifies the title of the book.';
                 }
-
                 field(Author; Rec.Author)
                 {
-                    ApplicationArea = All;
+                    ToolTip = 'Specifies the author of the book.';
                 }
-
-                field(Rented; Rec.Rented)
-                {
-                    ApplicationArea = All;
-                }
-
                 field(Series; Rec.Series)
                 {
-                    ApplicationArea = All;
+                    ToolTip = 'Specifies the series of the book.';
                 }
-
                 field(Genre; Rec.Genre)
                 {
-                    ApplicationArea = All;
+                    ToolTip = 'Specifies the genre of the book.';
                 }
-
                 field("Book Price"; Rec."Book Price")
                 {
-                    ApplicationArea = All;
+                    ToolTip = 'Specifies the price of the book.';
                 }
-
                 field("Publication Date"; Rec."Publication Date")
                 {
-                    ApplicationArea = All;
+                    ToolTip = 'Specifies the publication date of the book.';
                 }
-
+                field(Rented; Rec.Rented)
+                {
+                    ToolTip = 'Specifies wether the book is currently rented.';
+                }
                 field("Customer Name"; Rec."Customer Name")
                 {
-                    ApplicationArea = All;
+                    ToolTip = 'Specifies the customer who rented the book.';
                 }
-
                 field("Amount Rented"; Rec."Amount Rented")
                 {
-                    ApplicationArea = All;
+                    ToolTip = 'Specifies the amount of times the book has been rented.';
                 }
             }
         }
@@ -69,7 +61,7 @@ page 50201 "Book List"
         {
             action("New Book")
             {
-                Caption = 'Add New Book';
+                Caption = 'Add Book';
                 Image = Add;
                 ToolTip = 'Add a new book to the library.';
 

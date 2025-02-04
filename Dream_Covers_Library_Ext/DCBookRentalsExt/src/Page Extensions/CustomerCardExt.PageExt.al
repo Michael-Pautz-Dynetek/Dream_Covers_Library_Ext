@@ -22,6 +22,10 @@ pageextension 50410 "Customer Card Ext" extends "Customer Card"
                 ToolTip = 'Specifies the end date of the customers probation period.';
                 //Editable = false;
             }
+            field("Amount of Books"; Rec."Amount of Books")
+            {
+
+            }
         }
     }
 

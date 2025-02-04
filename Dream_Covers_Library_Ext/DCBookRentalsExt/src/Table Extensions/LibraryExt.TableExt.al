@@ -46,7 +46,7 @@ tableextension 50403 "Library Ext" extends Library
                     if Customer."Amount of Books" = Customer."Book Limit" then
                         Error(BookLimitError, Customer.Name, Customer."Book Limit")
                     else
-                        Message(BookLimitMessage, Customer.Name, Customer."Book Limit");
+                        Message(BookLimitMessage, Customer.Name, Customer."Book Limit" - Customer."Amount of Books");
                 end;
             "Overdue Levels"::Medium:
                 Error(RentNotAllowedError, Customer.Name, Customer."Highest Overdue Level");

@@ -1,10 +1,6 @@
 codeunit 50401 "Book Rentals"
 {
-    trigger OnRun()
-    begin
-
-    end;
-
+    //Rent or return book based on the value of the rented field
     procedure RentOrReturnBook(var CurrentLibrary: Record Library)
     begin
         if CurrentLibrary.Rented then begin
@@ -15,6 +11,8 @@ codeunit 50401 "Book Rentals"
         RentBook(CurrentLibrary);
     end;
 
+    // Return book procedure that clears the overdue data of the book
+    // and updates the highest overdue level of the customer.
     local procedure ReturnBook(var CurrentLibrary: Record Library)
     var
         Customer: Record Customer;
@@ -22,11 +20,7 @@ codeunit 50401 "Book Rentals"
         ConfirmReturn: Label 'Do you want to return "%1"?', Comment = 'Title of the selected book.';
     begin
         if Confirm(ConfirmReturn, false, CurrentLibrary.Title) then begin
-            if Customer.Get(CurrentLibrary."Customer No.") then begin
-                if (Customer."Highest Overdue Level" = OverdueLevels::Extreme) AND (Customer."Probation Date" = 0D) then
-                    Customer.Validate("Probation Date", CalcDate('<+6M>', Today));
-                Customer.Modify(true);
-            end;
+            SetProbationDate(Customer, CurrentLibrary);
             CurrentLibrary.Validate(Rented, false);
             CurrentLibrary.Validate("Customer No.", '');
             CurrentLibrary.Validate("Date Rented", 0D);
@@ -38,12 +32,19 @@ codeunit 50401 "Book Rentals"
         end;
     end;
 
-    // [IntegrationEvent(false, false)]
-    // local procedure OnAfterReturnBook(Customer: Record Customer)
-    // begin
-    // end;
+    // assigns the probation date of 6 months after the current date to the customer when returning a book
+    // that was of extreme overdue level
+    local procedure SetProbationDate(var Customer: Record Customer; Library: Record Library)
+    begin
+        if Customer.Get(Library."Customer No.") then begin
+            if (Customer."Highest Overdue Level" = "Overdue Levels"::Extreme) AND (Customer."Probation Date" = 0D) then
+                Customer.Validate("Probation Date", CalcDate('<+6M>', Today));
+            Customer.Modify(true);
+        end;
+    end;
 
-    // [EventSubscriber(ObjectType::Codeunit, Codeunit::"Book Rentals", OnAfterReturnBook, '', false, false)]
+    // Updates the highest overdue level of the returning customer by looping through the books rented by the customer
+    // and getting the highest overdue level
     local procedure UpdateHighestOverdueLevel(Customer: Record Customer) //Only for renting and returning
     var
         Library: Record Library;
@@ -56,7 +57,8 @@ codeunit 50401 "Book Rentals"
                 if Library."Overdue Level".AsInteger() >= OverdueLevels.AsInteger() then
                     OverdueLevels := Library."Overdue Level"
             until Library.Next() = 0;
-            Customer.Validate("Highest Overdue Level", OverdueLevels);
+            if OverdueLevels.AsInteger() <> Customer."Highest Overdue Level".AsInteger() then
+                Customer.Validate("Highest Overdue Level", OverdueLevels);
         end
         else
             Customer.Validate("Highest Overdue Level", OverdueLevels::" ");
@@ -69,9 +71,6 @@ codeunit 50401 "Book Rentals"
         RentOutMessage: Label 'You have rented out %1', Comment = 'Title of the book rented out.';
         CustNameError: Label 'No customer was selected.';
     begin
-        // if CurrentLibrary."Customer Name" = '' then
-        //     Error(CustNameError);
-
         if Page.RunModal(Page::"Rent Book Card", CurrentLibrary) = Action::LookupOK then begin
             if CurrentLibrary."Customer No." <> '' then begin
                 CurrentLibrary."Amount Rented" += 1;
@@ -79,11 +78,14 @@ codeunit 50401 "Book Rentals"
                 CurrentLibrary.Modify(true);
                 if Customer.Get(CurrentLibrary."Customer No.") then begin
                     Customer.Validate("Amount of Books", Customer."Amount of Books" + 1);
-                    //Customer.Modify(true);
                     UpdateHighestOverdueLevel(Customer);
                 end;
                 Message(RentOutMessage, CurrentLibrary.Title);
             end;
+        end
+        else begin
+            CurrentLibrary.Validate("Customer No.", '');
+            CurrentLibrary.Modify(true);
         end;
 
     end;
@@ -103,15 +105,18 @@ codeunit 50401 "Book Rentals"
     end;
 
     procedure UpdateOverdueLevel(var Library: Record Library)
+    var
+        GeneralSetup: Record "Library General Setup";
     begin
+        GeneralSetup.Get(2);
         case Library."Weeks Overdue" of
             0:
                 Library.Validate("Overdue Level", Library."Overdue Level"::" ");
-            1:
+            GeneralSetup."Mild Week Amount":
                 Library.Validate("Overdue Level", Library."Overdue Level"::Mild);
-            2 .. 3:
+            GeneralSetup."Medium Week Amount", 3:
                 Library.Validate("Overdue Level", Library."Overdue Level"::Medium);
-            4:
+            GeneralSetup."High Week Amount":
                 Library.Validate("Overdue Level", Library."Overdue Level"::High);
             else
                 Library.Validate("Overdue Level", Library."Overdue Level"::Extreme);

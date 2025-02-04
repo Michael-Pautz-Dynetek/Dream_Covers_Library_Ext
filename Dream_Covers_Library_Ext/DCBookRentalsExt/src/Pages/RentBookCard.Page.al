@@ -28,11 +28,12 @@ page 50402 "Rent Book Card"
             {
                 field("Customer No."; Rec."Customer No.")
                 {
-
+                    Caption = 'Customer No.';
+                    ToolTip = 'Specifies the customer number.';
                 }
                 field("Client Name"; Rec."Customer Name")
                 {
-                    Caption = 'Client Name';
+                    Caption = 'Customer Name';
                     ToolTip = 'Enter the name of the renting customer.';
                     // trigger OnAssistEdit()
                     // var
@@ -44,9 +45,10 @@ page 50402 "Rent Book Card"
                     //     end;
                     // end;
                 }
-                field("Date Rented";Rec."Date Rented")
+                field("Date Rented"; Rec."Date Rented")
                 {
                     Caption = 'Date Rented';
+                    ToolTip = 'Specifies the date the book was rented';
                 }
             }
         }

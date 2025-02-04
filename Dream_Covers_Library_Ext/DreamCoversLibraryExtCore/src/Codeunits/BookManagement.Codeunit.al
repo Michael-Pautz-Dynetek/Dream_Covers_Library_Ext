@@ -25,7 +25,7 @@ codeunit 50213 "Book Management"
             InsertNewBook(TempLibrary);
     end;
 
-    local procedure InsertNewBook(TempLibrary: Record Library temporary)
+    local procedure InsertNewBook(TempLibrary: Record Library)
     var
         NewLibrary: Record Library;
         AddMessage: Label 'You have added "%1" to the table.', Comment = 'Title of the new book.';
@@ -65,7 +65,7 @@ codeunit 50213 "Book Management"
         NewLibrary.Validate(Author, CurrentLibrary.Author);
         NewLibrary.Validate(Series, CurrentLibrary.Series);
         NewLibrary.Validate(Prequel, CurrentLibrary.Title);
-        NewLibrary.Validate("Prequel ID", CurrentLibrary."Book No.");
+        //NewLibrary.Validate("Prequel ID", CurrentLibrary."Book No.");
         NewLibrary.Validate(Genre, CurrentLibrary.Genre);
         NewLibrary.Insert(true);
 
