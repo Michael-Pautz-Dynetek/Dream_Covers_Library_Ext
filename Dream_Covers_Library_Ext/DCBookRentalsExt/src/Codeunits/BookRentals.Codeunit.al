@@ -114,7 +114,7 @@ codeunit 50401 "Book Rentals"
                 Library.Validate("Overdue Level", Library."Overdue Level"::" ");
             GeneralSetup."Mild Week Amount":
                 Library.Validate("Overdue Level", Library."Overdue Level"::Mild);
-            GeneralSetup."Medium Week Amount", 3:
+            GeneralSetup."Mild Week Amount"..GeneralSetup."Medium Week Amount":
                 Library.Validate("Overdue Level", Library."Overdue Level"::Medium);
             GeneralSetup."High Week Amount":
                 Library.Validate("Overdue Level", Library."Overdue Level"::High);

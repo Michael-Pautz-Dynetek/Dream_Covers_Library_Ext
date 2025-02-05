@@ -56,26 +56,27 @@ tableextension 50407 "Customers Ext" extends Customer
                     end;
                 "Highest Overdue Level"::Mild:
                     begin
-                        Validate("Rent Allowed", true);
-                        Validate("Book Limit", "Amount of Books" + 3);
+                        if "Amount of Books" <> "Book Limit" then begin
+                            Validate("Rent Allowed", true);
+                            Validate("Book Limit", "Amount of Books" + 3);
+                        end
+                        else
+                            Validate("Rent Allowed", false);
                     end;
                 "Highest Overdue Level"::Medium:
-                    begin
-                        Validate("Rent Allowed", false);
-                        Validate("Book Limit", 0);
-                    end;
+                    RentAllowedFalse();
                 "Highest Overdue Level"::High:
-                    begin
-                        Validate("Rent Allowed", false);
-                        Validate("Book Limit", 0);
-                    end;
+                    RentAllowedFalse();
                 "Highest Overdue Level"::Extreme:
-                    begin
-                        Validate("Rent Allowed", false);
-                        Validate("Book Limit", 0);
-                    end;
+                    RentAllowedFalse();
             end
         else
             Validate("Rent Allowed", false);
+    end;
+
+    local procedure RentAllowedFalse()
+    begin
+        Validate("Rent Allowed", false);
+        Validate("Book Limit", 0);
     end;
 }
