@@ -111,6 +111,18 @@ table 50200 Library
             Caption = 'Amount Rented';
             ToolTip = 'Specifies the amount of times the book has been rented.';
         }
+        field(151; "Rented Rank"; Integer)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Rented Rank';
+            ToolTip = 'Specifies the rank of how many times the book has been rented in the last month.';
+        }
+        field(152; "Amount Rented Last Month"; Integer)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Amount Rented Last Month';
+            ToolTip = 'Specifies how many times the book has been rented in the last month.';
+        }
 
         field(160; "Prequel ID"; Integer)
         {

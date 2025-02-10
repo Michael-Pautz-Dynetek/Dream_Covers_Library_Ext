@@ -19,8 +19,18 @@ pageextension 50402 "Book List Ext" extends "Book List"
             field("Weeks Overdue"; Rec."Weeks Overdue")
             {
                 Caption = 'Weeks Overdue';
-                ToolTip = 'Specifies the amount of weeks the book is overdue';
+                ToolTip = 'Specifies the amount of weeks the book is overdue.';
                 ApplicationArea = All;
+            }
+            field("Rented Rank"; Rec."Rented Rank")
+            {
+                Caption = 'Rented Rank';
+                ToolTip = 'Specifies the rank of the books for the last month.';
+                ApplicationArea = All;
+            }
+            field("Amount Rented Last Month"; Rec."Amount Rented Last Month")
+            {
+
             }
         }
         modify("Customer Name")
@@ -51,6 +61,17 @@ pageextension 50402 "Book List Ext" extends "Book List"
                     BookRentals.RentOrReturnBook(Rec);
                 end;
             }
+            action("Order by Rank")
+            {
+                Caption = 'Order by Rank';
+                Image = SortAscending;
+                Tooltip = 'Sort the list by the rank ascending';
+                trigger OnAction()
+                begin
+                    Rec.SetCurrentKey("Rented Rank");
+                    CurrPage.Update(false);
+                end;
+            }
 
             action("View Overdue Customers")
             {
@@ -65,6 +86,17 @@ pageextension 50402 "Book List Ext" extends "Book List"
                     Page.Run(Page::"Overdue Customers List");
                 end;
             }
+
+            action("Rent/Return Logs")
+            {
+                Caption = 'Rent/Return Logs';
+                Image = Log;
+                trigger OnAction()
+                begin
+                    Page.Run(Page::"Rent Return Log List");
+                end;
+            }
+
         }
     }
 
@@ -72,7 +104,7 @@ pageextension 50402 "Book List Ext" extends "Book List"
     var
         BookRentals: Codeunit "Book Rentals";
     begin
-        BookRentals.OpenPageUpdates();
+        //BookRentals.OpenPageUpdates();
     end;
 
     var

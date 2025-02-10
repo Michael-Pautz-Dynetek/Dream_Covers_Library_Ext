@@ -29,6 +29,7 @@ codeunit 50401 "Book Rentals"
             CurrentLibrary.Modify(true);
             if Customer."Highest Overdue Level" <> OverdueLevels::Extreme then
                 UpdateHighestOverdueLevel(Customer);
+            LogRentReturn(CurrentLibrary, false);
         end;
     end;
 
@@ -81,6 +82,7 @@ codeunit 50401 "Book Rentals"
                     UpdateHighestOverdueLevel(Customer);
                 end;
                 Message(RentOutMessage, CurrentLibrary.Title);
+                LogRentReturn(CurrentLibrary, true);
             end;
         end
         else begin
@@ -114,13 +116,13 @@ codeunit 50401 "Book Rentals"
                 Library.Validate("Overdue Level", Library."Overdue Level"::" ");
             GeneralSetup."Mild Week Amount":
                 Library.Validate("Overdue Level", Library."Overdue Level"::Mild);
-            GeneralSetup."Mild Week Amount"..GeneralSetup."Medium Week Amount":
+            GeneralSetup."Mild Week Amount" .. GeneralSetup."Medium Week Amount":
                 Library.Validate("Overdue Level", Library."Overdue Level"::Medium);
             GeneralSetup."High Week Amount":
                 Library.Validate("Overdue Level", Library."Overdue Level"::High);
-            else
-                Library.Validate("Overdue Level", Library."Overdue Level"::Extreme);
         end;
+        if Library."Weeks Overdue" >= GeneralSetup."Extreme Week Amount" then
+            Library.Validate("Overdue Level", Library."Overdue Level"::Extreme);
     end;
 
     procedure CalcWeeksOverdue(var Library: Record Library)
@@ -139,7 +141,6 @@ codeunit 50401 "Book Rentals"
             repeat
                 SetHighestLevel(Library);
             until Library.Next() = 0;
-
     end;
 
     local procedure SetHighestLevel(var Library: Record Library)
@@ -180,5 +181,26 @@ codeunit 50401 "Book Rentals"
             exit;
 
         Message(BookOverdueMessage, Library.Title, Library."Overdue Level");
+    end;
+
+    local procedure LogRentReturn(Library: Record Library; Rent: Boolean)
+    var
+        RentReturnLog: Record "Rent Return Log";
+    begin
+        RentReturnLog.Init();
+        RentReturnLog.Validate("Entry No.");
+        RentReturnLog.Validate("Book No.", Library."Book No.");
+        RentReturnLog.Validate("Customer Name", Library."Customer Name");
+        //RentReturnLog.Validate("Entry Date", Today); Actual code for publishing
+        RentReturnLog.Validate(Title, Library.Title);
+        if Rent then begin
+            RentReturnLog.Validate("Type", 'Rent');
+            RentReturnLog.Validate("Entry Date", Library."Date Rented");//for testing purposes
+        end
+        else begin
+            RentReturnLog.Validate("Type", 'Return');
+            RentReturnLog.Validate("Entry Date", Today)
+        end;
+        RentReturnLog.Insert(true);
     end;
 }

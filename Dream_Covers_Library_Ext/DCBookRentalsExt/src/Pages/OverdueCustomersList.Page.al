@@ -91,7 +91,7 @@ page 50409 "Overdue Customers List"
     var
         BookRentals: Codeunit "Book Rentals";
     begin
-        BookRentals.OpenPageUpdates();
+        // BookRentals.OpenPageUpdates();
     end;
 
     var
