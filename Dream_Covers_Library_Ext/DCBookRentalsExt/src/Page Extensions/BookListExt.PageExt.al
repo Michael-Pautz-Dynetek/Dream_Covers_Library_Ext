@@ -89,7 +89,7 @@ pageextension 50402 "Book List Ext" extends "Book List"
 
             action("Rent/Return Logs")
             {
-                Caption = 'Rent/Return Logs';
+                Caption = 'View Rent/Return Logs';
                 Image = Log;
                 trigger OnAction()
                 begin
@@ -97,6 +97,27 @@ pageextension 50402 "Book List Ext" extends "Book List"
                 end;
             }
 
+        }
+        addlast(Category_Category6)
+        {
+            actionref("Rent or Return Book_Promoted"; "Rent or Return Book")
+            {
+            }
+        }
+        addlast(Category_Category4)
+        {
+            actionref("Order by Rank_Promoted"; "Order by Rank")
+            {
+            }
+        }
+        addlast(Category_Category5)
+        {
+            actionref("View Overdue Customers_Promoted"; "View Overdue Customers")
+            {
+            }
+            actionref("Rent/Return Logs_Promoted"; "Rent/Return Logs")
+            {
+            }
         }
     }
 

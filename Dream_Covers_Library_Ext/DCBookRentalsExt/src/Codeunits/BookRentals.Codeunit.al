@@ -129,7 +129,7 @@ codeunit 50401 "Book Rentals"
     begin
         if Library."Date Rented" = 0D then
             exit;
-        Library.Validate("Weeks Overdue", Round((Today - Library."Date Rented") / 7, 1, '='));
+        Library.Validate("Weeks Overdue", (Today - Library."Date Rented") DIV 7);
     end;
 
     procedure GetHighestLevel()

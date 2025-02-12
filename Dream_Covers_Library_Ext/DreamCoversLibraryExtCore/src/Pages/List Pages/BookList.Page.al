@@ -6,7 +6,7 @@ page 50201 "Book List"
     SourceTable = Library;
     Caption = 'Book List';
     CardPageId = "Book Details Card";
-    //InsertAllowed = false;
+    InsertAllowed = false;
     ModifyAllowed = false;
 
     layout
@@ -99,6 +99,51 @@ page 50201 "Book List"
                     FilterPublishedDate.FilterLast2Years(Rec);
                     CurrPage.Update();
                 end;
+            }
+            action("Clear Book Filters")
+            {
+                Caption = 'Clear Filters';
+                Image = ClearFilter;
+                ToolTip = 'Clear all filters on the current page.';
+
+                trigger OnAction()
+                begin
+                    Rec.Reset();
+                    CurrPage.Update();
+                end;
+            }
+        }
+        area(Promoted)
+        {
+            group(Category_New)
+            {
+                Caption = 'New';
+
+                actionref("New Book_Promoted"; "New Book")
+                {
+                }
+            }
+            group(Category_Category4)
+            {
+                Caption = 'View/Filter';
+
+                actionref("View 3 Most Rented Books_Promoted"; "View 3 Most Rented Books")
+                {
+                }
+                actionref("Filter Published Date_Promoted"; "Filter Published Date")
+                {
+                }
+                actionref("Clear Book Filters_Promoted"; "Clear Book Filters")
+                {
+                }
+            }
+            group(Category_Category5)
+            {
+                Caption = 'Pages';
+            }
+            group(Category_Category6)
+            {
+                Caption = 'Book Rentals';
             }
         }
     }
