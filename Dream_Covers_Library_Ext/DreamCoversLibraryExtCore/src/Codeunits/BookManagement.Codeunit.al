@@ -20,7 +20,7 @@ codeunit 50213 "Book Management"
         TempLibrary: Record Library temporary;
     begin
         TempLibrary.Init();
-        TempLibrary.Insert(true);
+        TempLibrary.Insert();
         if Page.RunModal(Page::"Book Details Card", TempLibrary) = Action::LookupOK then
             InsertNewBook(TempLibrary);
     end;
@@ -31,6 +31,7 @@ codeunit 50213 "Book Management"
         AddMessage: Label 'You have added "%1" to the table.', Comment = 'Title of the new book.';
     begin
         NewLibrary.Init();
+        TempLibrary.Validate("Date Added", Today);
         NewLibrary := TempLibrary;
         NewLibrary.Insert(true);
         Message(AddMessage, NewLibrary.Title);

@@ -8,6 +8,12 @@
 		},
 		{
 			"path": "../.."
+		},
+		{
+			"path": "../../../BookDetailsApi"
+		},
+		{
+			"path": "../../../Ascent API Libary"
 		}
 	]
 }

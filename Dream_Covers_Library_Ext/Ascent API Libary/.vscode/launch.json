@@ -1,0 +1,113 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        // {
+        //     //Social Mobule Sandbox
+        //     "type": "al",
+        //     "request": "launch",
+        //     "name": "Microsoft cloud sandbox",
+        //     "environmentType": "Sandbox",
+        //     // "environmentName": "TimesheetSandbox",
+        //     //  "environmentName": "Production-Dev-v2",
+        //     // "environmentName": "Sandbox-Production",
+        //     "environmentName": "SandboxV10",
+        //     // "environmentName": "Restored-sandboxV4",
+        //     "tenant": "909ebb00-4191-4c08-bab4-2fca7d020089",
+        //     "breakOnError": false,
+        //     "launchBrowser": false,
+        //     "enableLongRunningSqlStatements": false,
+        //     "enableSqlInformationDebugger": false,
+        //     "schemaUpdateMode": "ForceSync"        
+        // }
+        // ,
+        // {
+        //     "name": "Microsoft cloud sandbox",
+        //     "request": "launch",
+        //     "type": "al",
+        //     "environmentType": "Sandbox",
+        //     "environmentName": "Timesheet_Sandbox",
+        //     "startupObjectId": 16,
+        //     "startupObjectType": "Page",
+        //     "breakOnError": true,
+        //     "launchBrowser": false,
+        //     "enableLongRunningSqlStatements": true,
+        //     "enableSqlInformationDebugger": true,
+        //     "schemaUpdateMode": "ForceSync",
+        //     "tenant": "7d43b417-2cec-4387-8929-d5c15038c1fa"
+        // },
+        // {
+        //     "name": "BCCA",
+        //     "type": "al",
+        //     "request": "launch",
+        //     "server": "http://bcca",
+        //     "serverInstance": "BC",
+        //     "authentication": "UserPassword",
+        //     "breakOnError": "All",
+        //     "breakOnRecordWrite": "None",
+        //     "launchBrowser": false,
+        //     "enableSqlInformationDebugger": true,
+        //     "enableLongRunningSqlStatements": true,
+        //     "longRunningSqlStatementsThreshold": 500,
+        //     "numberOfSqlStatements": 10,
+        //     "tenant": "default"
+        // },
+        // {
+        //     "name": "DynDev",
+        //     "type": "al",
+        //     "request": "launch",
+        //     "environmentType": "Sandbox",
+        //     "environmentName": "ZASandbox",
+        //     "startupObjectId": 22,
+        //     "breakOnError": "All",
+        //     "breakOnRecordWrite": "None",
+        //     "launchBrowser": true,
+        //     "enableSqlInformationDebugger": true,
+        //     "enableLongRunningSqlStatements": true,
+        //     "longRunningSqlStatementsThreshold": 500,
+        //     "numberOfSqlStatements": 10,
+        //     "tenant": "dyndevuk.onmicrosoft.com"
+        // }
+      //   {
+      //     //Social Mobule Sandbox
+      //     "type": "al",
+      //     "request": "launch",
+      //     "name": "Microsoft cloud sandbox",
+      //     "environmentType": "Sandbox",
+      //   //   "environmentName": "Production-Dev-v2",
+      //     "environmentName": "SandboxV10",
+      //     //  "environmentName": "SandboxV7",
+      //     "startupCompany": "Social Mobile",
+      //     // "environmentName": "Sandbox-Production",
+      //     "tenant": "909ebb00-4191-4c08-bab4-2fca7d020089",
+      //     // "startupObjectId": 50229,
+      //     // "startupObjectId": 50229,
+      //     "startupObjectType": "Page",
+      //     "breakOnError": false,
+      //     "launchBrowser": false,
+      //     "enableLongRunningSqlStatements": false,
+      //     "enableSqlInformationDebugger": false,
+      //     // "schemaUpdateMode": "ForceSync"
+      // },
+      {
+        "name": "Training Server",
+            "request": "launch",
+            "type": "al",
+            "environmentType": "OnPrem",
+            "server": "http://trainingserver",
+            "serverInstance": "BC",
+            "authentication": "UserPassword",
+            "startupObjectId": 9022,
+            "startupObjectType": "Page",
+            "breakOnError": "All",
+            "launchBrowser": true,
+            "enableLongRunningSqlStatements": true,
+            "enableSqlInformationDebugger": true,
+            "tenant": "default",
+            "usePublicURLFromServer": true
+        // "forceUpgrade": true
+        // "schemaUpdateMode": "ForceSync"
+      }
+        // }
+
+    ]
+}

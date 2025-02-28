@@ -4,6 +4,7 @@ page 50418 "Rent Return Log List"
     ApplicationArea = All;
     UsageCategory = Lists;
     SourceTable = "Rent Return Log";
+    SourceTableView = order(descending);
     Editable = false;
     layout
     {
@@ -48,17 +49,72 @@ page 50418 "Rent Return Log List"
     {
         area(Processing)
         {
-            action(ActionName)
+            action("View Rent Logs")
             {
-
+                Caption = 'View Rent Logs';
+                Image = View;
                 trigger OnAction()
+                var
+                    RentReturnLogActions: Codeunit "Rent Return Log Actions";
                 begin
-
+                    RentReturnLogActions.FilterType(Rec, 'Rent');
+                    CurrPage.Update(false);
+                end;
+            }
+            action("View Return Logs")
+            {
+                Caption = 'View Return Logs';
+                Image = View;
+                trigger OnAction()
+                var
+                    RentReturnLogActions: Codeunit "Rent Return Log Actions";
+                begin
+                    RentReturnLogActions.FilterType(Rec, 'Return');
+                    CurrPage.Update(false);
+                end;
+            }
+            action("Rank Monthly Rented")
+            {
+                Caption = 'Rank Monthly Rented';
+                Image = SortAscending;
+                trigger OnAction()
+                var
+                    RankRecentlyRented: Codeunit "Rank Recently Rented";
+                begin
+                    RankRecentlyRented.Run();
+                end;
+            }
+            action("Filter Selected Book")
+            {
+                Caption = 'Filter Selected Book';
+                Image = Filter;
+                trigger OnAction()
+                var
+                    RentReturnLog: Record "Rent Return Log";
+                begin
+                    CurrPage.SetSelectionFilter(RentReturnLog);
+                    RentReturnLog.FindFirst();
+                    Rec.SetRange("Book No.", RentReturnLog."Book No.");
+                    CurrPage.Update(false);
                 end;
             }
         }
-    }
+        area(Promoted)
+        {
+            group(Category_Process)
+            {
+                Caption = 'Views';
 
-    var
-        myInt: Integer;
+                actionref("View Rent Logs_Promoted"; "View Rent Logs")
+                {
+                }
+                actionref("View Return Logs_Promoted"; "View Return Logs")
+                {
+                }
+                actionref("Filter Selected Book_Promoted"; "Filter Selected Book")
+                {
+                }
+            }
+        }
+    }
 }

@@ -90,10 +90,22 @@ pageextension 50402 "Book List Ext" extends "Book List"
             action("Rent/Return Logs")
             {
                 Caption = 'View Rent/Return Logs';
+                ToolTip = 'Open the Rent/Return log page.';
                 Image = Log;
                 trigger OnAction()
                 begin
                     Page.Run(Page::"Rent Return Log List");
+                end;
+            }
+
+            action("View Inventory Dashboard")
+            {
+                Caption = 'View Inventory Dashboard';
+                ToolTip = 'Open the Library Inventory Dashboard page.';
+                Image = View;
+                trigger OnAction()
+                begin
+                    Page.Run(Page::"Inventory Dashboard");
                 end;
             }
 
@@ -118,6 +130,9 @@ pageextension 50402 "Book List Ext" extends "Book List"
             actionref("Rent/Return Logs_Promoted"; "Rent/Return Logs")
             {
             }
+            actionref("View Inventory Dashboard_Promoted"; "View Inventory Dashboard")
+            {
+            }
         }
     }
 
@@ -127,7 +142,4 @@ pageextension 50402 "Book List Ext" extends "Book List"
     begin
         //BookRentals.OpenPageUpdates();
     end;
-
-    var
-        myInt: Integer;
 }

@@ -8,7 +8,7 @@ codeunit 50310 "Search Genre Enum"
     procedure GetCaptions(Input: Text): Text
     var
         BookGenres: Enum "Book Genres";
-        NotFoundMessage: Label 'No genres were found containing the text "%1"',Comment = 'Placeholder for input text.';
+        NotFoundMessage: Label 'No genres were found containing the text "%1"', Comment = 'Placeholder for input text.';
         CaptionsList: List of [Text];
         GenreName, FoundGenres : Text;
         IsFirst: Boolean;

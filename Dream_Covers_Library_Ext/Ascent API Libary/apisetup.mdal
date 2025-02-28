@@ -1,0 +1,58 @@
+solution "API" {
+    Prefix = "AAT";
+    
+    master "API" {
+        ShortName = "API";
+        
+        fields {
+            template("Description"; Description)
+            field("Status"; Enum ['Disabled','Development','Production'])
+            field("Dev. Access Token"; Text[100])
+            field("Dev. Secret Key"; Text[100])
+            field("Dev. Refresh Token"; Text[100])
+            field("Dev. Expiry Date"; Date)
+            field("Dev. Base Endpoint"; Text[250])
+            field("Prod. Access Token"; Text[100])
+            field("Prod. Secret Key"; Text[100])
+            field("Prod. Refresh Token"; Text[100])
+            field("Prod. Base Endpoint"; Text[250])
+            field("Prod. Expiry Date"; Date)
+            field("Test Override"; Boolean)
+            field("Test Override Endpoint"; Text[250])
+
+        }
+        cardPage {
+            group("General") {
+                field("Description")
+                field("Status")
+            }
+            group("Develpoment")
+            {
+                field("Dev. Access Token")
+                field("Dev. Secret Key")
+                field("Dev. Base Endpoint")
+                field("Dev. Refresh Token")
+                field("Dev. Expiry Date")
+            }
+            group("Production")
+            {
+                field("Prod. Access Token")
+                field("Prod. Secret Key")
+                field("Prod. Base Endpoint")
+                field("Prod. Refresh Token")
+                field("Prod. Expiry Date")
+            }
+            group("Dev. Override")
+            {
+                field("Test Override")
+                field("Test Override Endpoint")
+
+            }
+        }
+        listPage {
+            field("Description")
+            field("Status")
+        }
+    }
+    
+}

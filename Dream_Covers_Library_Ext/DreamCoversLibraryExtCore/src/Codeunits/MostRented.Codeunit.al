@@ -5,7 +5,7 @@ codeunit 50204 "Most Rented"
         Books: Record Library;
         Counter: Integer;
         Result: Text;
-        MostRentedBooks: Label 'Top 3 most rented books:\';
+        MostRentedBooks: Label 'Top 3 most rented books historically:\';
     begin
         Counter := 1;
         Result := '';

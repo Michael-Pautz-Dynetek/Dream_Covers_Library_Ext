@@ -39,6 +39,10 @@ page 50201 "Book List"
                 {
                     ToolTip = 'Specifies the publication date of the book.';
                 }
+                field("Date Added"; Rec."Date Added")
+                {
+                    ToolTip = 'Specifies the date the book was added';
+                }
                 field(Rented; Rec.Rented)
                 {
                     ToolTip = 'Specifies wether the book is currently rented.';

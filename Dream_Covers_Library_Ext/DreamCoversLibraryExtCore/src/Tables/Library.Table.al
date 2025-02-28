@@ -108,7 +108,7 @@ table 50200 Library
         field(150; "Amount Rented"; Integer)
         {
             DataClassification = CustomerContent;
-            Caption = 'Amount Rented';
+            Caption = 'Total Amount Rented';
             ToolTip = 'Specifies the amount of times the book has been rented.';
         }
         field(151; "Rented Rank"; Integer)
@@ -129,6 +129,12 @@ table 50200 Library
             DataClassification = CustomerContent;
             Caption = 'Prequel ID';
             ToolTip = 'ID of the prequel book.';
+        }
+        field(170; "Date Added"; Date)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Date Added';
+            Tooltip = 'Specifies the date the book was added.';
         }
     }
 

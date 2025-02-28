@@ -15,12 +15,14 @@ codeunit 50420 "Rank Recently Rented"
     var
         Library: Record Library;
         RentReturnLog: Record "Rent Return Log";
+        OneMonthAgo: DateTime;
     begin
         if Library.FindSet() then
             repeat
                 RentReturnLog.SetRange("Book No.", Library."Book No.");
                 RentReturnLog.SetRange(Type, 'Rent');
-                RentReturnLog.SetRange("Entry Date", CalcDate('-1M', Today), Today);
+                //OneMonthAgo := CalcDate('-1M', Today) + Time;
+                RentReturnLog.SetRange("Entry Date", CreateDateTime(CalcDate('-1M', Today), Time), CreateDateTime(Today, Time));
                 if RentReturnLog.FindSet() then
                     Library.Validate("Amount Rented Last Month", RentReturnLog.Count)
                 else

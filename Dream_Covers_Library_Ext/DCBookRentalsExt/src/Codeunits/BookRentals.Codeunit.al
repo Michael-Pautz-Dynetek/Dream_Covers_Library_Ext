@@ -76,6 +76,7 @@ codeunit 50401 "Book Rentals"
             if CurrentLibrary."Customer No." <> '' then begin
                 CurrentLibrary."Amount Rented" += 1;
                 CurrentLibrary.Validate(Rented, true);
+                //CurrentLibrary.Validate("Date Rented", Today);
                 CurrentLibrary.Modify(true);
                 if Customer.Get(CurrentLibrary."Customer No.") then begin
                     Customer.Validate("Amount of Books", Customer."Amount of Books" + 1);
@@ -95,15 +96,19 @@ codeunit 50401 "Book Rentals"
     [EventSubscriber(ObjectType::Table, Database::Library, 'OnBeforeInsertEvent', '', false, false)]
     local procedure OnBeforeInsertLibrary(var Rec: Record Library)
     begin
-        CalcWeeksOverdue(Rec);
-        UpdateOverdueLevel(Rec);
+        if Rec."Date Rented" <> 0D then begin
+            CalcWeeksOverdue(Rec);
+            UpdateOverdueLevel(Rec);
+        end;
     end;
 
     [EventSubscriber(ObjectType::Table, Database::Library, 'OnBeforeModifyEvent', '', false, false)]
     local procedure OnBeforeModifyLibrary(var Rec: Record Library)
     begin
-        CalcWeeksOverdue(Rec);
-        UpdateOverdueLevel(Rec);
+        if Rec."Date Rented" <> 0D then begin
+            CalcWeeksOverdue(Rec);
+            UpdateOverdueLevel(Rec);
+        end;
     end;
 
     procedure UpdateOverdueLevel(var Library: Record Library)
@@ -191,15 +196,15 @@ codeunit 50401 "Book Rentals"
         RentReturnLog.Validate("Entry No.");
         RentReturnLog.Validate("Book No.", Library."Book No.");
         RentReturnLog.Validate("Customer Name", Library."Customer Name");
-        //RentReturnLog.Validate("Entry Date", Today); Actual code for publishing
+        //RentReturnLog.Validate("Entry Date", CurrentDateTime); Actual code for publishing
         RentReturnLog.Validate(Title, Library.Title);
         if Rent then begin
             RentReturnLog.Validate("Type", 'Rent');
-            RentReturnLog.Validate("Entry Date", Library."Date Rented");//for testing purposes
+            RentReturnLog.Validate("Entry Date", CreateDateTime(Library."Date Rented", Time));//for testing purposes
         end
         else begin
             RentReturnLog.Validate("Type", 'Return');
-            RentReturnLog.Validate("Entry Date", Today)
+            RentReturnLog.Validate("Entry Date", CurrentDateTime)
         end;
         RentReturnLog.Insert(true);
     end;

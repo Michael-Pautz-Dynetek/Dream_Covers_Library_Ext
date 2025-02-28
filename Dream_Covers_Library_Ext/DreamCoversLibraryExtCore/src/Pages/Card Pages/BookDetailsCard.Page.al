@@ -92,6 +92,12 @@ page 50203 "Book Details Card"
             }
             group(Details)
             {
+                field("Date Added"; Rec."Date Added")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Date Added';
+                    ToolTip = 'Specifies the date the book was added.';
+                }
                 field(Pages; Rec.Pages)
                 {
                     ApplicationArea = All;

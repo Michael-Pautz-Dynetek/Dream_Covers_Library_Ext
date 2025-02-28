@@ -7,7 +7,6 @@ codeunit 50416 "Overdue Update"
             'Update Renting Details':
                 UpdateRentingDetails();
         end;
-        
     end;
 
     local procedure UpdateRentingDetails()
@@ -25,7 +24,4 @@ codeunit 50416 "Overdue Update"
 
         BookRentals.GetHighestLevel();
     end;
-    
-    var
-        myInt: Integer;
 }

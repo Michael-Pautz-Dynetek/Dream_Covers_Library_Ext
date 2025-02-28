@@ -9,14 +9,14 @@ pageextension 50406 "Book Details Card Ext" extends "Book Details Card"
                 ApplicationArea = All;
                 Caption = 'Overdue Level';
                 ToolTip = 'Specifies the overdue level of the book based on weeks overdue.';
-                Editable = false;
+                //Editable = false;
             }
             field("Date Rented"; Rec."Date Rented")
             {
                 ApplicationArea = All;
                 Caption = 'Date Rented';
                 ToolTip = 'Specifies the date the book was rented out.';
-                //Editable = false;
+                Editable = false;
             }
             field("Weeks Overdue"; Rec."Weeks Overdue")
             {

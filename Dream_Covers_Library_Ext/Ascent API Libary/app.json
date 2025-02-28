@@ -1,0 +1,32 @@
+
+{
+  "id": "a633d3fb-cca3-4ad2-ace0-77a00a664032",
+  "name": "Ascent API Library",
+  "publisher": "Dynetek (Pty) Ltd",
+  "version": "24.0.20240715.1222",
+  "brief": "API Setup and REST Client",
+  "description": "API Setup pages with REST Client for making requests to different APIs.",
+  "platform": "1.0.0.0",
+  "application": "23.0.0.0",
+  "runtime": "12.2",
+  "logo": "logo/logo-darkBG.jpg",
+  "url": "",
+  "EULA": "",
+  "privacyStatement": "",
+  "help": "",
+  "screenshots": [],
+  "dependencies": [],
+  "idRanges": [
+    {
+      "from": 80100,
+      "to": 80149
+    }
+  ],
+  "features": [],
+  "resourceExposurePolicy": {
+    "allowDebugging": true,
+    "allowDownloadingSource": false
+  },
+  "internalsVisibleTo": [],
+  "keyVaultUrls": []
+}
