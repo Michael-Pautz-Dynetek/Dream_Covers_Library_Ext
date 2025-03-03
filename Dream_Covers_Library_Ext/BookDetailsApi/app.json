@@ -16,6 +16,12 @@
       "name": "DreamCoversLibraryExt",
       "publisher": "Default Publisher",
       "version": "1.0.0.0"
+    },
+    {
+      "id": "a633d3fb-cca3-4ad2-ace0-77a00a664032",
+      "name": "Ascent API Library",
+      "publisher": "Dynetek (Pty) Ltd",
+      "version": "24.0.20240715.1222"
     }],
   "screenshots": [],
   "platform": "1.0.0.0",

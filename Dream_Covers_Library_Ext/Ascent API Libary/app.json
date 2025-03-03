@@ -15,7 +15,13 @@
   "privacyStatement": "",
   "help": "",
   "screenshots": [],
-  "dependencies": [],
+  "dependencies": [
+    { "id": "c58e86d9-5cbc-4caf-bd33-959316dbfb86",
+      "name": "DreamCoversLibraryExt",
+      "publisher": "Default Publisher",
+      "version": "1.0.0.0"
+    }
+  ],
   "idRanges": [
     {
       "from": 80100,
