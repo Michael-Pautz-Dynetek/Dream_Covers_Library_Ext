@@ -12,7 +12,13 @@ table 50200 Library
             ToolTip = 'Identification number of the book.';
         }
 
-        field(20; Title; Text[100])
+        field(15; "Open Library ID"; Code[50])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Open Library ID';
+        }
+
+        field(20; Title; Text[250])
         {
             DataClassification = CustomerContent;
             Caption = 'Title';
@@ -24,6 +30,12 @@ table 50200 Library
             DataClassification = CustomerContent;
             Caption = 'Author';
             ToolTip = 'Specifies the author of the book.';
+        }
+
+        field(35; Description; Text[1250])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Description';
         }
 
         field(40; Rented; Boolean)
@@ -135,6 +147,11 @@ table 50200 Library
             DataClassification = CustomerContent;
             Caption = 'Date Added';
             Tooltip = 'Specifies the date the book was added.';
+        }
+        field(180; "Date Created"; DateTime)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Date Created';
         }
     }
 

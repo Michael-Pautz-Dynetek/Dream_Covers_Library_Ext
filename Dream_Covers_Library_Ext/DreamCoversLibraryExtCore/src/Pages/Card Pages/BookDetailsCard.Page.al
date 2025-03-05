@@ -105,6 +105,11 @@ page 50203 "Book Details Card"
                     ToolTip = 'Specifies the number of pages of the book.';
                 }
 
+                field(Description; Rec.Description)
+                {
+                    ApplicationArea = All;
+                }
+
                 field(Prequel; Rec.Prequel)
                 {
                     ApplicationArea = All;
