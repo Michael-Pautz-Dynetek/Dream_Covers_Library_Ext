@@ -92,6 +92,14 @@ page 50203 "Book Details Card"
             }
             group(Details)
             {
+                field("Open Library ID"; Rec."Open Library ID")
+                {
+                    ApplicationArea = All;
+                }
+                field("Date Created"; Rec."Date Created")
+                {
+                    ApplicationArea = All;
+                }
                 field("Date Added"; Rec."Date Added")
                 {
                     ApplicationArea = All;

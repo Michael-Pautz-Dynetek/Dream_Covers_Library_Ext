@@ -13,7 +13,10 @@ codeunit 50503 "Save Books"
         Library.Init();
         Library.Validate(Title, TempLibrary.Title);
         Library.Validate("Date Added", Today);
-        OpenLibraryApi.GetBookDescriptionRequest(TempLibrary."Open Library ID", Library);
+        //OpenLibraryApi.GetBookDescriptionRequest(TempLibrary."Open Library ID", Library);
+        Library.Validate("Date Created", TempLibrary."Date Created");
+        Library.Validate(Description, TempLibrary.Description);
+        Library.Validate("Open Library ID", TempLibrary."Open Library ID");
         Library.Insert(true);
     end;
 

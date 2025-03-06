@@ -7,11 +7,9 @@ codeunit 50501 "Open Library API"
 
     procedure SearchBookRequest(SearchText: Text; var TempLibrary: Record Library temporary)
     var
-        AATJsonHelper: Codeunit "AAT JSON Helper";
-        ResultObject: JsonObject;
+        ResultObject, DataObject : JsonObject;
         LinesArray: JsonArray;
         LinesToken: JsonToken;
-        DataObject: JsonObject;
         Query: Text;
         counter: Integer;
     begin
@@ -26,22 +24,33 @@ codeunit 50501 "Open Library API"
                 TempLibrary.Validate("Book No.", Format(counter));
                 TempLibrary.Validate(Title, AATJsonHelper.GetJsonTokenAsValue(DataObject, 'title').AsText());
                 TempLibrary.Validate("Open Library ID", AATJsonHelper.GetJsonTokenAsValue(DataObject, 'key').AsCode());
+                GetWorksDetailsRequest(TempLibrary."Open Library ID", TempLibrary);
                 TempLibrary.Insert();
                 counter += 1;
             end;
     end;
 
-    procedure GetBookDescriptionRequest(BookKey: Code[50]; var Library: Record Library)
+    procedure GetWorksDetailsRequest(WorksKey: Code[50]; var Library: Record Library)
     var
-        AATJsonHelper: Codeunit "AAT JSON Helper";
-        ResultObject: JsonObject;
+        ResultObject, DataObject : JsonObject;
+        Query: Text;
+    begin
+        Query := WorksKey + '.json';
+        SendGetRequest('AAT0003', AATJsonHelper, ResultObject, Query);
+        Library.Validate(Description, AATJsonHelper.GetJsonTokenAsValue(ResultObject, 'description').AsText());
+        AATJsonHelper.GetJsonObject(ResultObject, 'created', DataObject);
+        Library.Validate("Date Created", AATJsonHelper.GetJsonTokenAsValue(DataObject, 'value').AsDateTime());
+    end;
+
+    local procedure GetBookDetailsRequest(BookKey: Code[50]; var Library: Record Library)
+    var
+        ResultObject, DataObject : JsonObject;
         Query: Text;
     begin
         Query := BookKey + '.json';
         SendGetRequest('AAT0003', AATJsonHelper, ResultObject, Query);
-        //Library.Validate(Description, AATJsonHelper.GetJsonObject(ResultObject, 'description').AsText());
+        Library.Validate(Description, AATJsonHelper.GetJsonTokenAsValue(ResultObject, 'description').AsText());
     end;
-
 
     local procedure FormatSearchText(SearchText: Text): Text
     begin
@@ -62,5 +71,5 @@ codeunit 50501 "Open Library API"
     end;
 
     var
-        myInt: Integer;
+        AATJsonHelper: Codeunit "AAT JSON Helper";
 }
