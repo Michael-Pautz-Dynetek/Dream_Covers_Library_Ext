@@ -33,11 +33,19 @@ page 50502 "Search Book API"
                 {
 
                 }
-                field("Publication Date"; Rec."Publication Date")
+                field("Open Library ID"; Rec."Open Library ID")
                 {
 
                 }
-                field("Open Library ID"; Rec."Open Library ID")
+                // field(Description; Rec.Description)
+                // {
+
+                // }
+                field("Author Codes"; Rec."Author Codes")
+                {
+
+                }
+                field(Author; Rec.Author)
                 {
 
                 }
@@ -66,6 +74,16 @@ page 50502 "Search Book API"
                         until Rec.Next() = 0;
                     Rec.Reset();
                     Message(SaveSuccessfulMessage);
+                end;
+            }
+            action(TestDate)
+            {
+                trigger OnAction()
+                var
+                    TestDate: Date;
+                begin
+                    if Evaluate(TestDate, '28 July 2014', 1) then
+                        Message('%1', TestDate)
                 end;
             }
         }

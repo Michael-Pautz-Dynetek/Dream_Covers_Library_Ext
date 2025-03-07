@@ -7,18 +7,38 @@ codeunit 50503 "Save Books"
 
     procedure InsertSelectedBooks(TempLibrary: Record Library)
     var
-        Library: Record Library;
         OpenLibraryApi: Codeunit "Open Library API";
+        Library: Record Library;
     begin
         Library.Init();
         Library.Validate(Title, TempLibrary.Title);
         Library.Validate("Date Added", Today);
-        //OpenLibraryApi.GetBookDescriptionRequest(TempLibrary."Open Library ID", Library);
-        Library.Validate("Date Created", TempLibrary."Date Created");
-        Library.Validate(Description, TempLibrary.Description);
         Library.Validate("Open Library ID", TempLibrary."Open Library ID");
+        Library.Validate(Author, TempLibrary.Author);
+        Library.Validate("Author Codes", TempLibrary."Author Codes");
+        OpenLibraryApi.GetWorksDetailsRequest(TempLibrary."Open Library ID", Library);
         Library.Insert(true);
+
+        InsertAuthors(TempLibrary."Author Codes");
     end;
 
     //insert new author procedure to check author table for each auth key, if not found insert author details(send get request with querye auth key=key)
+    local procedure InsertAuthors(AuthorString: Text)
+    var
+        OpenLibraryApi: Codeunit "Open Library API";
+        Authors: Record Authors;
+        CodeArray: List of [Text];
+        Item: Text;
+    begin
+        CodeArray := AuthorString.Split(',');
+        foreach Item in CodeArray do begin
+            if not Authors.Get(Item) then begin
+                Authors.Init();
+                Authors.Validate("Author No.", Item);
+                OpenLibraryApi.GetAuthorDetailsRequest(Item, Authors);
+                OpenLibraryApi.GetGeneralAuthorRequest(Item, Authors.Name, Authors);
+                Authors.Insert(true);
+            end;
+        end;
+    end;
 }

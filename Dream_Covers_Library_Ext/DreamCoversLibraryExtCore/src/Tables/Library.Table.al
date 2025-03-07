@@ -32,7 +32,7 @@ table 50200 Library
             ToolTip = 'Specifies the author of the book.';
         }
 
-        field(35; Description; Text[1250])
+        field(35; Description; Text[2048])
         {
             DataClassification = CustomerContent;
             Caption = 'Description';
