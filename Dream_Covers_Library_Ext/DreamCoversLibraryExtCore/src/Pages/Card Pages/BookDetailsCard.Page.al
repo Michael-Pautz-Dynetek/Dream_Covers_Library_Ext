@@ -89,6 +89,8 @@ page 50203 "Book Details Card"
                     Caption = 'Amount Rented';
                     ToolTip = 'Specifies the amount of times the book has been rented.';
                 }
+
+
             }
             group(Details)
             {
@@ -132,6 +134,14 @@ page 50203 "Book Details Card"
                     Editable = false;
                     Caption = 'Sequel';
                     ToolTip = 'Specifies the sequel of the book.';
+                }
+                field(Cover; Rec.Cover)
+                {
+                    ApplicationArea = All;
+                    //Editable = false;
+                    ShowCaption = true;
+                    Caption = 'Book Cover';
+                    ToolTip = 'Specifies the cover of the book.';
                 }
             }
         }

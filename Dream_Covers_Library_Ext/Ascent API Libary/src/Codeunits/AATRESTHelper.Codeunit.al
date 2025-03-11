@@ -162,7 +162,7 @@ codeunit 80101 "AAT REST Helper"
 
     procedure GetResponseAsInStream() ResponseStream: InStream
     begin
-        // WebResponse.Content.ReadAs(ResponseStream);
+         WebHttpResponseMessage.Content.ReadAs(ResponseStream);
     end;
 
     /// <summary>

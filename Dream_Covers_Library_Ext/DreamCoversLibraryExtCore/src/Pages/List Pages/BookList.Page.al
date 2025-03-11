@@ -8,7 +8,7 @@ page 50201 "Book List"
     CardPageId = "Book Details Card";
     InsertAllowed = false;
     ModifyAllowed = false;
-
+    Editable = false;
     layout
     {
         area(Content)
@@ -22,6 +22,7 @@ page 50201 "Book List"
                 field(Author; Rec.Author)
                 {
                     ToolTip = 'Specifies the author of the book.';
+
                 }
                 field(Series; Rec.Series)
                 {
@@ -116,6 +117,7 @@ page 50201 "Book List"
                     CurrPage.Update();
                 end;
             }
+
         }
         area(Promoted)
         {

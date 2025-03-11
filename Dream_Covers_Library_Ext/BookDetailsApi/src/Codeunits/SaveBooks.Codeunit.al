@@ -9,21 +9,29 @@ codeunit 50503 "Save Books"
     var
         OpenLibraryApi: Codeunit "Open Library API";
         Library: Record Library;
+        BookExistsError: Label '%1 already exist in the system';
     begin
-        Library.Init();
-        Library.Validate(Title, TempLibrary.Title);
-        Library.Validate("Date Added", Today);
-        Library.Validate("Open Library ID", TempLibrary."Open Library ID");
-        Library.Validate(Author, TempLibrary.Author);
-        Library.Validate("Author Codes", TempLibrary."Author Codes");
-        OpenLibraryApi.GetWorksDetailsRequest(TempLibrary."Open Library ID", Library);
-        Library.Insert(true);
+        Library.SetRange("Open Library ID", TempLibrary."Open Library ID");
 
-        InsertAuthors(TempLibrary."Author Codes");
+        if not Library.FindSet() then begin
+            Library.Init();
+            Library.Validate(Title, TempLibrary.Title);
+            Library.Validate("Date Added", Today);
+            Library.Validate("Open Library ID", TempLibrary."Open Library ID");
+            Library.Validate(Author, TempLibrary.Author);
+            Library.Validate("Author Codes", TempLibrary."Author Codes");
+            OpenLibraryApi.GetWorksDetailsRequest(TempLibrary."Open Library ID", Library);
+            OpenLibraryApi.GetBookCoverRequest(TempLibrary."Cover No.", Library);
+            Library.Insert(true);
+
+            InsertAuthors(TempLibrary."Author Codes", Library."Book No.");
+        end
+        else
+            Message(BookExistsError, TempLibrary.Title);
     end;
 
     //insert new author procedure to check author table for each auth key, if not found insert author details(send get request with querye auth key=key)
-    local procedure InsertAuthors(AuthorString: Text)
+    local procedure InsertAuthors(AuthorString: Text; BookNo: Code[20])
     var
         OpenLibraryApi: Codeunit "Open Library API";
         Authors: Record Authors;

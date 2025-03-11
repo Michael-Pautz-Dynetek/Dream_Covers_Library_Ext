@@ -11,7 +11,7 @@ page 50508 "Authors List"
         {
             repeater(Authors)
             {
-
+                Editable = false;
                 field("Author No."; Rec."Author No.")
                 {
                     ToolTip = 'Specifies the value of the Author No. field.', Comment = '%';
@@ -52,17 +52,8 @@ page 50508 "Authors List"
     {
         area(Processing)
         {
-            action(ActionName)
-            {
 
-                trigger OnAction()
-                begin
-
-                end;
-            }
         }
     }
 
-    var
-        myInt: Integer;
 }

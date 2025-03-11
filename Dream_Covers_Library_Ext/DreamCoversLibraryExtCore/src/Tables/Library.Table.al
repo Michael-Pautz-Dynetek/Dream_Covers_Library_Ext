@@ -10,6 +10,7 @@ table 50200 Library
             DataClassification = CustomerContent;
             Caption = 'Book No.';
             ToolTip = 'Identification number of the book.';
+            //TableRelation = BooksAuthors."Book No.";
         }
 
         field(15; "Open Library ID"; Code[50])
@@ -25,11 +26,20 @@ table 50200 Library
             ToolTip = 'Specifies the title of the book.';
         }
 
-        field(30; Author; Text[100])
+        field(30; Author; Text[2048])
         {
             DataClassification = CustomerContent;
             Caption = 'Author';
             ToolTip = 'Specifies the author of the book.';
+
+        }
+
+        field(31; Authors; Text[2048])
+        {
+            Caption = 'Authors';
+            ToolTip = 'Specifies the authors of the book.';
+            FieldClass = FlowField;
+            CalcFormula = lookup(BooksAuthors."Book No." where("Book No." = field("Book No.")));
         }
 
         field(35; Description; Text[2048])
@@ -109,6 +119,22 @@ table 50200 Library
             ToolTip = 'Identification number of the renting customer.';
         }
 
+        field(131; "Author Codes"; Text[1024])
+        {
+            Caption = 'Author Codes';
+            DataClassification = CustomerContent;
+        }
+        field(132; "Cover"; Media)
+        {
+            Caption = 'Cover';
+            DataClassification = CustomerContent;
+        }
+        field(133; "Cover No."; Code[50])
+        {
+            Caption = 'Cover No.';
+            DataClassification = CustomerContent;
+        }
+
         field(140; "Customer Name"; Text[100])
         {
             Caption = 'Customer Name';
@@ -160,6 +186,14 @@ table 50200 Library
         key(PK; "Book No.")
         {
             Clustered = true;
+        }
+    }
+
+    fieldgroups
+    {
+        fieldgroup(Brick; Author, Title, Rented, "Customer Name", Genre, Cover)
+        {
+
         }
     }
 

@@ -10,17 +10,25 @@ page 50502 "Search Book API"
     {
         area(Content)
         {
-            group(Header)
+            group(Search)
             {
+                Caption = 'Search';
                 field(SearchText; SearchText)
                 {
+                    Caption = 'Book Title';
+                    ToolTip = 'Book title to search from Open Library API.';
                     trigger OnValidate()
                     var
                         OpenLibraryAPI: Codeunit "Open Library API";
                     begin
-                        if SearchText <> '' then
-                            OpenLibraryAPI.SearchBookRequest(SearchText, Rec)
-                        else
+                        if SearchText <> '' then begin
+                            Rec.DeleteAll();
+                            OpenLibraryAPI.SearchBookRequest(SearchText, Rec);
+                            if not Rec.FindFirst() then begin
+                                Message('No books were found with this title.');
+                                SearchText := '';
+                            end;
+                        end else
                             Rec.DeleteAll();
                     end;
 
@@ -29,6 +37,7 @@ page 50502 "Search Book API"
 
             repeater(Books)
             {
+                Editable = false;
                 field(Title; Rec.Title)
                 {
 
@@ -76,14 +85,22 @@ page 50502 "Search Book API"
                     Message(SaveSuccessfulMessage);
                 end;
             }
-            action(TestDate)
+            action("View Book List")
             {
+                Caption = 'View Book List';
+                Image = View;
                 trigger OnAction()
-                var
-                    TestDate: Date;
                 begin
-                    if Evaluate(TestDate, '28 July 2014', 1) then
-                        Message('%1', TestDate)
+                    Page.Run(Page::"Book List");
+                end;
+            }
+            action("View Authors List")
+            {
+                Caption = 'View Authors List';
+                Image = View;
+                trigger OnAction()
+                begin
+                    Page.Run(Page::"Authors List");
                 end;
             }
         }
