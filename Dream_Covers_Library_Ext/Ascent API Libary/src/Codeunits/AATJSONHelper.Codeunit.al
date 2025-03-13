@@ -125,10 +125,11 @@ codeunit 80100 "AAT JSON Helper"
     /// <param name="JsonObject">JsonObject.</param>
     /// <param name="Path">text.</param>
     /// <returns>Return variable JsonToken of type JsonToken.</returns>
-    procedure SelectJsonToken(JsonObject: JsonObject; Path: Text) JsonToken: JsonToken
+    procedure SelectJsonToken(JsonObject: JsonObject; Path: Text; GiveError: Boolean) JsonToken: JsonToken
     begin
         if not JsonObject.SelectToken(Path, JsonToken) then
-            Error('Could not find a token with path %1', Path);
+            if GiveError then
+                Error('Could not find a token with path %1', Path);
     end;
 
     local procedure CheckJsonValueNotNull(SelectedToken: JsonToken; Path: Text; GiveError: Boolean) NotNull: Boolean

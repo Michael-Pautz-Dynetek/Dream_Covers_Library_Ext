@@ -53,6 +53,11 @@ table 50213 "Library General Setup"
             Caption = 'Extreme Fine Amount';
             DecimalPlaces = 2;
         }
+        field(10; "Open Library API AAT No."; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Open Library API AAT No.';
+        }
 
     }
 

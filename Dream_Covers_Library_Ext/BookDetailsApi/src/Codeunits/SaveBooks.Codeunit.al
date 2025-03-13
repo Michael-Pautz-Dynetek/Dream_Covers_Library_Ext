@@ -5,7 +5,7 @@ codeunit 50503 "Save Books"
 
     end;
 
-    procedure InsertSelectedBooks(TempLibrary: Record Library)
+    procedure InsertSelectedBooks(TempLibrary: Record Library; var SavedTitles: Text)
     var
         OpenLibraryApi: Codeunit "Open Library API";
         Library: Record Library;
@@ -16,6 +16,7 @@ codeunit 50503 "Save Books"
         if not Library.FindSet() then begin
             Library.Init();
             Library.Validate(Title, TempLibrary.Title);
+            SavedTitles += Library.Title + '\';
             Library.Validate("Date Added", Today);
             Library.Validate("Open Library ID", TempLibrary."Open Library ID");
             Library.Validate(Author, TempLibrary.Author);
@@ -45,6 +46,7 @@ codeunit 50503 "Save Books"
                 Authors.Validate("Author No.", Item);
                 OpenLibraryApi.GetAuthorDetailsRequest(Item, Authors);
                 OpenLibraryApi.GetGeneralAuthorRequest(Item, Authors.Name, Authors);
+                OpenLibraryApi.GetAuthorPhotoRequest(Item, Authors);
                 Authors.Insert(true);
             end;
         end;

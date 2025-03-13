@@ -58,6 +58,10 @@ page 50502 "Search Book API"
                 {
 
                 }
+                field("Cover No."; Rec."Cover No.")
+                {
+                    //FieldPropertyName = FieldPropertyValue;
+                }
             }
         }
     }
@@ -74,15 +78,16 @@ page 50502 "Search Book API"
                 var
                     SaveBooks: Codeunit "Save Books";
                     TempLibrary: Record Library;
-                    SaveSuccessfulMessage: Label 'The selected book/s have been added to the library.';
+                    SaveSuccessfulMessage: Label 'The following book(s) have been added to the library:\';
+                    SavedTitles: Text;
                 begin
                     CurrPage.SetSelectionFilter(Rec);
                     if Rec.FindSet() then
                         repeat
-                            SaveBooks.InsertSelectedBooks(Rec);
+                            SaveBooks.InsertSelectedBooks(Rec, SavedTitles);
                         until Rec.Next() = 0;
                     Rec.Reset();
-                    Message(SaveSuccessfulMessage);
+                    Message(SaveSuccessfulMessage + SavedTitles);
                 end;
             }
             action("View Book List")

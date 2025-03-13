@@ -1,5 +1,10 @@
 codeunit 50411 "Clear Probation Date"
 {
+    trigger OnRun()
+    begin
+        ClearCompletedProbationDates();
+    end;
+
     procedure ClearCompletedProbationDates()
     var
         Customer: Record Customer;
@@ -15,9 +20,9 @@ codeunit 50411 "Clear Probation Date"
                     Customer.Modify(true);
                 end;
             until Customer.Next() = 0;
-            Message(ProbationDatesRemovedMessage);
+            //Message(ProbationDatesRemovedMessage);
             exit;
         end;
-        Message(NoProbationDatesMessage);
+        //Message(NoProbationDatesMessage);
     end;
 }

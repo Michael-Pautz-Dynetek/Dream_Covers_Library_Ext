@@ -12,11 +12,13 @@ codeunit 50501 "Open Library API"
         ResultObject, DataObject : JsonObject;
         LinesArray, AuthorCodeArray, AuthorNameArray : JsonArray;
         LinesToken, JsonToken : JsonToken;
-        Query, AuthorString : Text;
+        Query, AuthorString, ReferenceID : Text;
+        CoverKey: Code[50];
         counter: Integer;
     begin
-        Query := '?title=' + FormatSearchText(SearchText) + '&page=1&limit=100';
-        SendGetRequest('AAT0001', ResultObject, Query, AATRestHelper, 'application/json');
+        ReferenceID := 'Book Search: ' + SearchText;
+        Query := '/search.json?title=' + FormatSearchText(SearchText) + '&page=1&limit=100';
+        SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID);
         counter := 0;
         TempLibrary.DeleteAll();
         if AATJsonHelper.GetJsonArray(ResultObject, 'docs', LinesArray) then
@@ -27,10 +29,9 @@ codeunit 50501 "Open Library API"
                 TempLibrary.Validate(Title, AATJsonHelper.GetJsonTokenAsValue(DataObject, 'title').AsText());
                 TempLibrary.Validate("Open Library ID", AATJsonHelper.GetJsonTokenAsValue(DataObject, 'key').AsCode());
                 if DataObject.Get('cover_edition_key', JsonToken) then
-                    TempLibrary.Validate("Cover No.", AATJsonHelper.GetJsonTokenAsValue(DataObject, 'cover_edition_key').AsCode());
+                    TempLibrary.Validate("Cover No.", JsonToken.AsValue().AsText());
                 if AATJsonHelper.GetJsonArray(DataObject, 'author_key', AuthorCodeArray) then begin
                     FormatAuthors(TempLibrary."Author Codes", AuthorCodeArray, AuthorString);
-
                 end;
                 if AATJsonHelper.GetJsonArray(DataObject, 'author_name', AuthorNameArray) then begin
                     FormatAuthors(TempLibrary.Author, AuthorNameArray, AuthorString);
@@ -38,20 +39,21 @@ codeunit 50501 "Open Library API"
                 TempLibrary.Insert();
                 counter += 1;
             end;
-        
+
     end;
 
     procedure GetBookCoverRequest(CoverNo: Code[50]; var Library: Record Library)
     var
         AATRestHelper: Codeunit "AAT REST Helper";
-        ResultObject, DataObject : JsonObject;
-        JsonToken: JsonToken;
+        //ResultObject, DataObject : JsonObject;
+        //JsonToken: JsonToken;
         HttpClient: HttpClient;
         HttpResponseMessage: HttpResponseMessage;
         InStream: InStream;
-        Query: Text;
+        Query, ReferenceID : Text;
     begin
-        Query := '/' + CoverNo + '.jpg';
+        ReferenceID := 'Book Cover: ' + CoverNo;
+        Query := '/b/olid/' + CoverNo + '.jpg';
         AATRestHelper.LoadAPIConfig('AAT0006');
         HttpClient.Get(AATRestHelper.GetAPIConfigBaseEndpoint() + Query, HttpResponseMessage);
         if HttpResponseMessage.IsSuccessStatusCode then begin
@@ -61,22 +63,45 @@ codeunit 50501 "Open Library API"
             Error('Image download failure');
     end;
 
+    procedure GetAuthorPhotoRequest(AuthorNo: Code[50]; var Author: Record Authors)
+    var
+        AATRestHelper: Codeunit "AAT REST Helper";
+        //ResultObject, DataObject : JsonObject;
+        //JsonToken: JsonToken;
+        HttpClient: HttpClient;
+        HttpResponseMessage: HttpResponseMessage;
+        InStream: InStream;
+        Query, ReferenceID : Text;
+    begin
+        ReferenceID := 'Author Photo: ' + AuthorNo;
+        Query := '/a/olid/' + AuthorNo + '.jpg';
+        AATRestHelper.LoadAPIConfig('AAT0006');
+        HttpClient.Get(AATRestHelper.GetAPIConfigBaseEndpoint() + Query, HttpResponseMessage);
+        if HttpResponseMessage.IsSuccessStatusCode then begin
+            HttpResponseMessage.Content.ReadAs(InStream);
+            Author.Photo.ImportStream(InStream, '');
+        end else
+            Error('Image download failure');
+    end;
+
     procedure GetWorksDetailsRequest(WorksKey: Code[50]; var Library: Record Library)
     var
         AATRestHelper: Codeunit "AAT REST Helper";
         ResultObject, DataObject : JsonObject;
         JsonToken: JsonToken;
-        Query: Text;
+        Query, ReferenceID : Text;
     begin
+        ReferenceID := 'Book Details: ' + WorksKey;
         Query := WorksKey + '.json';
-        SendGetRequest('AAT0003', ResultObject, Query, AATRestHelper, 'application/json');
+        SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID);
         if ResultObject.Get('description', JsonToken) then
             if JsonToken.IsObject then begin
-                AATJsonHelper.GetJsonObject(ResultObject, 'description', DataObject);
-                Library.Validate(Description, AATJsonHelper.GetJsonTokenAsValue(DataObject, 'value').AsText());
+                //DataObject := JsonToken.AsObject();
+                //Library.Validate(Description, AATJsonHelper.GetJsonTokenAsValue(DataObject, 'value').AsText());
+                Library.Validate(Description, AATJsonHelper.SelectJsonValueAsText('$.description.value', false));
             end
             else
-                Library.Validate(Description, AATJsonHelper.GetJsonTokenAsValue(ResultObject, 'description').AsText());
+                Library.Validate(Description, AATJsonHelper.SelectJsonValueAsText('$.description', false));
         AATJsonHelper.GetJsonObject(ResultObject, 'created', DataObject);
         Library.Validate("Date Created", AATJsonHelper.GetJsonTokenAsValue(DataObject, 'value').AsDateTime());
     end;
@@ -87,23 +112,20 @@ codeunit 50501 "Open Library API"
         ResultObject, DataObject : JsonObject;
         LinesArray: JsonArray;
         LinesToken, JsonToken : JsonToken;
-        Query: Text;
+        Query, ReferenceID : Text;
         DeathDate: Date;
     begin
-        Query := '?q=' + FormatSearchText(AuthorName);
-        SendGetRequest('AAT0004', ResultObject, Query, AATRestHelper, 'application/json');
+        ReferenceID := 'General Author: ' + AuthorKey;
+        Query := '/search/authors.json?q=' + FormatSearchText(AuthorName);
+        SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID);
         if AATJsonHelper.GetJsonArray(ResultObject, 'docs', LinesArray) then
             foreach LinesToken in LinesArray do begin
                 DataObject := LinesToken.AsObject();
                 if AATJsonHelper.GetJsonTokenAsValue(DataObject, 'key').AsText() = AuthorKey then begin
-                    // if DataObject.Get('death_date', JsonToken) then begin
-                    //     Evaluate(DeathDate, AATJsonHelper.GetJsonTokenAsValue(DataObject, 'death_date').AsText(), 1);
-                    //     Authors.Validate("Death Date", DeathDate);
-                    // end;
                     if DataObject.Get('work_count', JsonToken) then
-                        Authors.Validate("Work Count", AATJsonHelper.GetJsonTokenAsValue(DataObject, 'work_count').AsInteger());
+                        Authors.Validate("Work Count", JsonToken.AsValue().AsInteger());
                     if DataObject.Get('top_work', JsonToken) then
-                        Authors.Validate("Top Work", AATJsonHelper.GetJsonTokenAsValue(DataObject, 'top_work').AsText());
+                        Authors.Validate("Top Work", JsonToken.AsValue().AsText());
                 end;
             end;
     end;
@@ -113,28 +135,30 @@ codeunit 50501 "Open Library API"
         AATRestHelper: Codeunit "AAT REST Helper";
         ResultObject, DataObject : JsonObject;
         JsonToken: JsonToken;
-        Query: Text;
+        Query, ReferenceID : Text;
         BirthDate, DeathDate : Date;
     begin
-        Query := '/' + AuthorKey + '.json';
-        SendGetRequest('AAT0005', ResultObject, Query, AATRestHelper, 'application/json');
+        ReferenceID := 'Author Details: ' + AuthorKey;
+        Query := '/authors/' + AuthorKey + '.json';
+        SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID);
         //Authors.Validate("Author No.", AATJsonHelper.GetJsonTokenAsValue(ResultObject, 'key').AsCode());
-        if ResultObject.Get('birth_date', JsonToken) then begin
-            Evaluate(BirthDate, AATJsonHelper.GetJsonTokenAsValue(ResultObject, 'birth_date').AsText(), 1);
-            Authors.Validate("Birth Date", BirthDate);
-        end;
-        if ResultObject.Get('death_date', JsonToken) then begin
-            Evaluate(DeathDate, AATJsonHelper.GetJsonTokenAsValue(ResultObject, 'death_date').AsText(), 1);
-            Authors.Validate("Death Date", DeathDate);
-        end;
+        //if ResultObject.Get('birth_date', JsonToken) then begin
+        Evaluate(BirthDate, AATJsonHelper.SelectJsonValueAsText('$.birth_date', false), 1);
+        Authors.Validate("Birth Date", BirthDate);
+        //end;
+        //if ResultObject.Get('death_date', JsonToken) then begin
+        Evaluate(DeathDate, AATJsonHelper.SelectJsonValueAsText('$.death_date', false), 1);
+        Authors.Validate("Death Date", DeathDate);
+        //end;
         if ResultObject.Get('bio', JsonToken) then
             if JsonToken.IsObject then begin
-                AATJsonHelper.GetJsonObject(ResultObject, 'bio', DataObject);
-                Authors.Validate(Bio, AATJsonHelper.GetJsonTokenAsValue(DataObject, 'value').AsText());
+                //DataObject := JsonToken.AsObject();
+                //Authors.Validate(Bio, AATJsonHelper.GetJsonTokenAsValue(DataObject, 'value').AsText());
+                Authors.Validate(Bio, AATJsonHelper.SelectJsonValueAsText('$.bio.value', false));
             end else
-                Authors.Validate(Bio, AATJsonHelper.GetJsonTokenAsValue(ResultObject, 'bio').AsText());
-        if ResultObject.Get('personal_name', JsonToken) then
-            Authors.Validate("Personal Name", AATJsonHelper.GetJsonTokenAsValue(ResultObject, 'personal_name').AsText());
+                Authors.Validate(Bio, AATJsonHelper.SelectJsonValueAsText('$.bio', false));
+        //if ResultObject.Get('personal_name', JsonToken) then
+        Authors.Validate("Personal Name", AATJsonHelper.SelectJsonValueAsText('$.personal_name', false));
         Authors.Validate(Name, AATJsonHelper.GetJsonTokenAsValue(ResultObject, 'name').AsText());
     end;
 
@@ -143,15 +167,16 @@ codeunit 50501 "Open Library API"
         exit(SearchText.Replace(' ', '+'));
     end;
 
-    local procedure SendGetRequest(ApiNo: Code[20]; var ResultObject: JsonObject; var Query: Text; var AATRestHelper: Codeunit "AAT REST Helper"; ContentType: Text)
+    local procedure SendGetRequest(var ResultObject: JsonObject; var Query: Text; var AATRestHelper: Codeunit "AAT REST Helper"; ReferenceID: Text)
     begin
-        AATRestHelper.LoadAPIConfig(ApiNo);
+        GeneralSetup.Get(2);
+        AATRestHelper.LoadAPIConfig(GeneralSetup."Open Library API AAT No.");
         AATRestHelper.Initialize('GET', AATRestHelper.GetAPIConfigBaseEndpoint() + Query);
-        AATRestHelper.SetContentType(ContentType);
-        AATRestHelper.Send();
-
-        AATJsonHelper.InitializeJsonObjectFromText(AATRestHelper.GetResponseContentAsText());
-        ResultObject := AATJsonHelper.GetJsonObject();
+        AATRestHelper.SetContentType('application/json');
+        if AATRestHelper.Send(ReferenceID) then begin
+            AATJsonHelper.InitializeJsonObjectFromText(AATRestHelper.GetResponseContentAsText());
+            ResultObject := AATJsonHelper.GetJsonObject();
+        end;
     end;
 
     local procedure FormatAuthors(var Field: Text; var AuthorArray: JsonArray; var AuthorString: Text)
@@ -174,6 +199,7 @@ codeunit 50501 "Open Library API"
 
     var
         AATJsonHelper: Codeunit "AAT JSON Helper";
+        GeneralSetup: Record "Library General Setup";
     //AATRestHelper: Codeunit "AAT REST Helper";
 
 }

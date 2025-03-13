@@ -1,23 +1,17 @@
-page 50508 "Authors List"
+page 50524 "Author Card"
 {
-    PageType = List;
+    PageType = Card;
     ApplicationArea = All;
-    UsageCategory = Lists;
+    UsageCategory = Administration;
     SourceTable = Authors;
-    ModifyAllowed = false;
-    CardPageId = "Author Card";
 
     layout
     {
         area(Content)
         {
-            repeater(Authors)
+            group("Personal Details")
             {
-                Editable = false;
-                field("Author No."; Rec."Author No.")
-                {
-                    ToolTip = 'Specifies the value of the Author No. field.', Comment = '%';
-                }
+
                 field(Name; Rec.Name)
                 {
                     ToolTip = 'Specifies the value of the Name field.', Comment = '%';
@@ -25,10 +19,6 @@ page 50508 "Authors List"
                 field("Personal Name"; Rec."Personal Name")
                 {
                     ToolTip = 'Specifies the value of the Personal Name field.', Comment = '%';
-                }
-                field(Bio; Rec.Bio)
-                {
-                    ToolTip = 'Specifies the value of the Bio field.', Comment = '%';
                 }
                 field("Birth Date"; Rec."Birth Date")
                 {
@@ -38,23 +28,35 @@ page 50508 "Authors List"
                 {
                     ToolTip = 'Specifies the value of the Death Date field.', Comment = '%';
                 }
-                field("Work Count"; Rec."Work Count")
+                field(Bio; Rec.Bio)
                 {
-                    ToolTip = 'Specifies the value of the Work Count field.', Comment = '%';
+                    ToolTip = 'Specifies the value of the Bio field.', Comment = '%';
                 }
+            }
+            group("Work Details")
+            {
+
                 field("Top Work"; Rec."Top Work")
                 {
                     ToolTip = 'Specifies the value of the Top Work field.', Comment = '%';
                 }
+                field("Work Count"; Rec."Work Count")
+                {
+                    ToolTip = 'Specifies the value of the Work Count field.', Comment = '%';
+                }
+                // part(AuthorBooks; "Author Books Part")
+                // {
+                //     SubPageLink=
+                // }
             }
         }
-    }
-
-    actions
-    {
-        area(Processing)
+        area(FactBoxes)
         {
-
+            part(AuthorPhotoPart; "Author Photo Part")
+            {
+                ApplicationArea = All;
+                SubPageLink = "Author No." = field("Author No.");
+            }
         }
     }
 

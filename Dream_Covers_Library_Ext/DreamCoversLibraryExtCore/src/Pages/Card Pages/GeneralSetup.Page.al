@@ -55,6 +55,11 @@ page 50214 "General Page Setup"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Book Nos. field.', Comment = '%';
                 }
+                field("Open Library API AAT No."; Rec."Open Library API AAT No.")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Open Library API Nos. field.', Comment = '%';
+                }
 
             }
         }
