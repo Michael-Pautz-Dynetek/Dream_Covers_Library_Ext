@@ -44,10 +44,6 @@ page 50524 "Author Card"
                 {
                     ToolTip = 'Specifies the value of the Work Count field.', Comment = '%';
                 }
-                // part(AuthorBooks; "Author Books Part")
-                // {
-                //     SubPageLink=
-                // }
             }
         }
         area(FactBoxes)

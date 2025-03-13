@@ -44,43 +44,38 @@ codeunit 50501 "Open Library API"
 
     procedure GetBookCoverRequest(CoverNo: Code[50]; var Library: Record Library)
     var
-        AATRestHelper: Codeunit "AAT REST Helper";
-        //ResultObject, DataObject : JsonObject;
-        //JsonToken: JsonToken;
-        HttpClient: HttpClient;
-        HttpResponseMessage: HttpResponseMessage;
         InStream: InStream;
         Query, ReferenceID : Text;
     begin
         ReferenceID := 'Book Cover: ' + CoverNo;
         Query := '/b/olid/' + CoverNo + '.jpg';
-        AATRestHelper.LoadAPIConfig('AAT0006');
-        HttpClient.Get(AATRestHelper.GetAPIConfigBaseEndpoint() + Query, HttpResponseMessage);
-        if HttpResponseMessage.IsSuccessStatusCode then begin
-            HttpResponseMessage.Content.ReadAs(InStream);
-            Library.Cover.ImportStream(InStream, '');
-        end else
-            Error('Image download failure');
+        GetImageRequest(Query, InStream);
+        Library.Cover.ImportStream(InStream, '');
     end;
 
     procedure GetAuthorPhotoRequest(AuthorNo: Code[50]; var Author: Record Authors)
     var
-        AATRestHelper: Codeunit "AAT REST Helper";
-        //ResultObject, DataObject : JsonObject;
-        //JsonToken: JsonToken;
-        HttpClient: HttpClient;
-        HttpResponseMessage: HttpResponseMessage;
         InStream: InStream;
         Query, ReferenceID : Text;
     begin
         ReferenceID := 'Author Photo: ' + AuthorNo;
         Query := '/a/olid/' + AuthorNo + '.jpg';
+        GetImageRequest(Query, InStream);
+        Author.Photo.ImportStream(InStream, '');
+    end;
+
+    local procedure GetImageRequest(Query: Text; var InStream: InStream)
+    var
+        AATRestHelper: Codeunit "AAT REST Helper";
+        HttpClient: HttpClient;
+        HttpResponseMessage: HttpResponseMessage;
+    begin
         AATRestHelper.LoadAPIConfig('AAT0006');
         HttpClient.Get(AATRestHelper.GetAPIConfigBaseEndpoint() + Query, HttpResponseMessage);
-        if HttpResponseMessage.IsSuccessStatusCode then begin
-            HttpResponseMessage.Content.ReadAs(InStream);
-            Author.Photo.ImportStream(InStream, '');
-        end else
+        if HttpResponseMessage.IsSuccessStatusCode then
+            HttpResponseMessage.Content.ReadAs(InStream)
+        //Author.Photo.ImportStream(InStream, '');
+        else
             Error('Image download failure');
     end;
 

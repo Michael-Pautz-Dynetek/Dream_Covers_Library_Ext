@@ -1,4 +1,4 @@
-page 50519 "Image Part"
+page 50519 "Book Cover Part"
 {
     PageType = CardPart;
     ApplicationArea = All;
