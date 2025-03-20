@@ -10,6 +10,9 @@ page 50518 "Author Books Part"
         {
             repeater("Books by Author")
             {
+                field("Book No."; Rec."Book No.")
+                {
+                }
                 field(Title; Rec.Title)
                 {
                     ToolTip = 'Specifies the title of the book.';

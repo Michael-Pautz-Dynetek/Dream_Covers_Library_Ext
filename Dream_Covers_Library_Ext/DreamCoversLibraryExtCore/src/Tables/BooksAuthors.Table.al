@@ -14,6 +14,14 @@ table 50215 "BooksAuthors"
             DataClassification = CustomerContent;
             TableRelation = Authors."Author No.";
         }
+        field(3; "Valid Link"; Boolean)
+        {
+            DataClassification = CustomerContent;
+        }
+        field(4; "Author Name"; Text[250])
+        {
+            DataClassification = CustomerContent;
+        }
     }
 
     keys

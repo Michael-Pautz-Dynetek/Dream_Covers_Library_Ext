@@ -11,6 +11,14 @@ page 50517 "Link List"
         {
             repeater(Links)
             {
+                field("Author Name"; Rec."Author Name")
+                {
+                    ToolTip = 'Specifies the value of the Author Name field.', Comment = '%';
+                }
+                field("Valid Link"; Rec."Valid Link")
+                {
+                    ToolTip = 'Specifies the value of the Valid Link field.', Comment = '%';
+                }
 
                 field("Author No."; Rec."Author No.")
                 {
@@ -20,6 +28,7 @@ page 50517 "Link List"
                 {
                     ToolTip = 'Specifies the value of the Book No. field.', Comment = '%';
                 }
+
             }
         }
     }

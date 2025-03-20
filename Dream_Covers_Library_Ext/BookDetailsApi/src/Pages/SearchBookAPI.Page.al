@@ -72,7 +72,7 @@ page 50502 "Search Book API"
         {
             action("Save Books")
             {
-                Caption = 'Save Books';
+                Caption = 'Save Book(s)';
                 Image = Save;
                 trigger OnAction()
                 var

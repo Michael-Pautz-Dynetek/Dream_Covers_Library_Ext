@@ -36,19 +36,30 @@ codeunit 50503 "Save Books"
     var
         OpenLibraryApi: Codeunit "Open Library API";
         Authors: Record Authors;
+        BooksAuthors: Record BooksAuthors;
         CodeArray: List of [Text];
-        Item: Text;
+        Item, AuthorName : Text;
     begin
         CodeArray := AuthorString.Split(',');
         foreach Item in CodeArray do begin
+
             if not Authors.Get(Item) then begin
                 Authors.Init();
                 Authors.Validate("Author No.", Item);
                 OpenLibraryApi.GetAuthorDetailsRequest(Item, Authors);
                 OpenLibraryApi.GetGeneralAuthorRequest(Item, Authors.Name, Authors);
+                AuthorName := Authors.Name;
                 OpenLibraryApi.GetAuthorPhotoRequest(Item, Authors);
                 Authors.Insert(true);
-            end;
+            end
+            else
+                AuthorName := Authors.Name;
+            BooksAuthors.Init();
+            BooksAuthors.Validate("Book No.", BookNo);
+            BooksAuthors.Validate("Author No.", Item);
+            BooksAuthors.Validate("Author Name", AuthorName);
+            BooksAuthors.Validate("Valid Link", true);
+            BooksAuthors.Insert(true);
         end;
     end;
 }

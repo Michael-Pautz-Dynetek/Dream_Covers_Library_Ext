@@ -44,6 +44,13 @@ page 50524 "Author Card"
                 {
                     ToolTip = 'Specifies the value of the Work Count field.', Comment = '%';
                 }
+
+            }
+            part(AuthorBooksPart; "Author Books Part")
+            {
+                //SubPageLink="Book No."=filter(SetBookListFilter(Rec."Author No."));SetBookListFilter(Rec."Author No."))
+                SubPageLink = "Book No." = field(BookAuthorRelationFilter);
+
             }
         }
         area(FactBoxes)
@@ -55,5 +62,48 @@ page 50524 "Author Card"
             }
         }
     }
+
+    trigger OnAfterGetRecord()
+    var
+        Library: Record Library;
+    begin
+        SetBookListFilter(Rec."Author No.");
+        //CurrPage.AuthorBooksPart.Page.SetTableView(Library);
+        // CurrPage.AuthorBooksPart.Page.SetSelectionFilter();
+    end;
+
+    local procedure SetBookListFilter(AuthorNo: Code[20]): Text
+    var
+        BooksAuthors: Record BooksAuthors;
+        ResultFilter: Text;
+        Test: Code[20];
+        IsFirst: Boolean;
+    begin
+        ResultFilter := '';
+        IsFirst := true;
+        BooksAuthors.SetRange("Author No.", AuthorNo);
+        if BooksAuthors.FindFirst() then
+            repeat
+                if IsFirst <> true then
+                    ResultFilter += '|' + BooksAuthors."Book No."
+                else begin
+                    ResultFilter += BooksAuthors."Book No.";
+                    IsFirst := false;
+                end;
+            until BooksAuthors.Next() = 0;
+        // exit(ResultFilter);
+        if ResultFilter <> Rec.BookAuthorRelationFilter then begin
+            Rec.SetFilter(BookAuthorRelationFilter, ResultFilter);
+            Rec.Modify();
+        end;
+
+        // Library.SetFilter("Book No.", ResultFilter);
+        // Test := 'B-0140';
+        // ResultFilter := 'where("Book No."=filter(' + Test + '))';
+        // Library.SetView(ResultFilter);
+    end;
+
+    var
+
 
 }
