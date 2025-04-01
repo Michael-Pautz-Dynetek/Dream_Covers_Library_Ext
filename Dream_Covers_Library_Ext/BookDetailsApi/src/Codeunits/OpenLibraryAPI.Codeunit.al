@@ -84,21 +84,25 @@ codeunit 50501 "Open Library API"
         AATRestHelper: Codeunit "AAT REST Helper";
         ResultObject, DataObject : JsonObject;
         JsonToken: JsonToken;
+        OutStream: OutStream;
         Query, ReferenceID : Text;
     begin
         ReferenceID := 'Book Details: ' + WorksKey;
         Query := WorksKey + '.json';
         SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID);
+        Library.Description.CreateOutStream(OutStream);
         if ResultObject.Get('description', JsonToken) then
             if JsonToken.IsObject then begin
                 //DataObject := JsonToken.AsObject();
                 //Library.Validate(Description, AATJsonHelper.GetJsonTokenAsValue(DataObject, 'value').AsText());
-                Library.Validate(Description, AATJsonHelper.SelectJsonValueAsText('$.description.value', false));
+                //Library.Validate(Description, AATJsonHelper.SelectJsonValueAsText('$.description.value', false));
+                OutStream.WriteText(AATJsonHelper.SelectJsonValueAsText('$.description.value', false));
             end
             else
-                Library.Validate(Description, AATJsonHelper.SelectJsonValueAsText('$.description', false));
-        AATJsonHelper.GetJsonObject(ResultObject, 'created', DataObject);
-        Library.Validate("Date Created", AATJsonHelper.GetJsonTokenAsValue(DataObject, 'value').AsDateTime());
+                OutStream.WriteText(AATJsonHelper.SelectJsonValueAsText('$.description', false));
+        // AATJsonHelper.GetJsonObject(ResultObject, 'created', DataObject);
+        // Library.Validate("Date Created", AATJsonHelper.GetJsonTokenAsValue(DataObject, 'value').AsDateTime());
+        Library.Validate("Date Created", AATJsonHelper.SelectJsonValueAsDateTime('$.created.value', false));
     end;
 
     procedure GetGeneralAuthorRequest(AuthorKey: Text; AuthorName: Text; var Authors: Record Authors)
@@ -130,31 +134,48 @@ codeunit 50501 "Open Library API"
         AATRestHelper: Codeunit "AAT REST Helper";
         ResultObject, DataObject : JsonObject;
         JsonToken: JsonToken;
-        Query, ReferenceID : Text;
+        OutStream: OutStream;
+        Query, ReferenceID, BirthText, DeathText : Text;
         BirthDate, DeathDate : Date;
+        BirthYear, DeathYear : Integer;
     begin
         ReferenceID := 'Author Details: ' + AuthorKey;
         Query := '/authors/' + AuthorKey + '.json';
         SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID);
         //Authors.Validate("Author No.", AATJsonHelper.GetJsonTokenAsValue(ResultObject, 'key').AsCode());
         //if ResultObject.Get('birth_date', JsonToken) then begin
-        Evaluate(BirthDate, AATJsonHelper.SelectJsonValueAsText('$.birth_date', false), 1);
+        DeathText := AATJsonHelper.SelectJsonValueAsText('$.death_date', false);
+        if StrLen(DeathText) <> 4 then
+            Evaluate(DeathDate, DeathText, 1)
+        else begin
+            Evaluate(DeathYear, DeathText);
+            DeathDate := DMY2Date(1, 1, DeathYear);
+        end;
+        Authors.Validate("Death Date", DeathDate);
+
+        BirthText := AATJsonHelper.SelectJsonValueAsText('$.birth_date', false);
+        if StrLen(BirthText) <> 4 then
+            Evaluate(BirthDate, BirthText, 1)
+        else begin
+            Evaluate(BirthYear, BirthText);
+            BirthDate := DMY2Date(1, 1, BirthYear);
+        end;
         Authors.Validate("Birth Date", BirthDate);
         //end;
         //if ResultObject.Get('death_date', JsonToken) then begin
-        Evaluate(DeathDate, AATJsonHelper.SelectJsonValueAsText('$.death_date', false), 1);
-        Authors.Validate("Death Date", DeathDate);
+
         //end;
+        Authors.Bio.CreateOutStream(OutStream);
         if ResultObject.Get('bio', JsonToken) then
             if JsonToken.IsObject then begin
                 //DataObject := JsonToken.AsObject();
                 //Authors.Validate(Bio, AATJsonHelper.GetJsonTokenAsValue(DataObject, 'value').AsText());
-                Authors.Validate(Bio, AATJsonHelper.SelectJsonValueAsText('$.bio.value', false));
+                OutStream.WriteText(AATJsonHelper.SelectJsonValueAsText('$.bio.value', false));
             end else
-                Authors.Validate(Bio, AATJsonHelper.SelectJsonValueAsText('$.bio', false));
+                OutStream.WriteText(AATJsonHelper.SelectJsonValueAsText('$.bio', false));
         //if ResultObject.Get('personal_name', JsonToken) then
         Authors.Validate("Personal Name", AATJsonHelper.SelectJsonValueAsText('$.personal_name', false));
-        Authors.Validate(Name, AATJsonHelper.GetJsonTokenAsValue(ResultObject, 'name').AsText());
+        Authors.Validate(Name, AATJsonHelper.SelectJsonValueAsText('$.name', false));
     end;
 
     local procedure FormatSearchText(SearchText: Text): Text

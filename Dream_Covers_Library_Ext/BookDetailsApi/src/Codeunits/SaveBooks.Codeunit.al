@@ -19,7 +19,8 @@ codeunit 50503 "Save Books"
             SavedTitles += Library.Title + '\';
             Library.Validate("Date Added", Today);
             Library.Validate("Open Library ID", TempLibrary."Open Library ID");
-            Library.Validate(Author, TempLibrary.Author);
+            //Library.Validate(Author, TempLibrary.Author);
+            Library.Author := TempLibrary.Author;
             Library.Validate("Author Codes", TempLibrary."Author Codes");
             OpenLibraryApi.GetWorksDetailsRequest(TempLibrary."Open Library ID", Library);
             OpenLibraryApi.GetBookCoverRequest(TempLibrary."Cover No.", Library);

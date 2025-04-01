@@ -69,8 +69,11 @@ codeunit 50401 "Book Rentals"
     local procedure RentBook(var CurrentLibrary: Record Library)
     var
         Customer: Record Customer;
+        Author: Record Authors;
+        AuthorCodes: List of [Text];
         RentOutMessage: Label 'You have rented out %1', Comment = 'Title of the book rented out.';
         CustNameError: Label 'No customer was selected.';
+        Item: Text;
     begin
         if Page.RunModal(Page::"Rent Book Card", CurrentLibrary) = Action::LookupOK then begin
             if CurrentLibrary."Customer No." <> '' then begin
@@ -81,6 +84,12 @@ codeunit 50401 "Book Rentals"
                 if Customer.Get(CurrentLibrary."Customer No.") then begin
                     Customer.Validate("Amount of Books", Customer."Amount of Books" + 1);
                     UpdateHighestOverdueLevel(Customer);
+                end;
+                AuthorCodes := CurrentLibrary."Author Codes".Split(',');
+                foreach Item in AuthorCodes do begin
+                    if Author.Get(Item) then
+                        Author."Books Rented Amount" += 1;
+                    Author.Modify(true);
                 end;
                 Message(RentOutMessage, CurrentLibrary.Title);
                 LogRentReturn(CurrentLibrary, true);

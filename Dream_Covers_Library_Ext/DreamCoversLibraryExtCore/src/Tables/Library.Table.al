@@ -19,7 +19,7 @@ table 50200 Library
             Caption = 'Open Library ID';
         }
 
-        field(20; Title; Text[250])
+        field(20; Title; Text[2048])
         {
             DataClassification = CustomerContent;
             Caption = 'Title';
@@ -42,7 +42,7 @@ table 50200 Library
             CalcFormula = lookup(BooksAuthors."Book No." where("Book No." = field("Book No.")));
         }
 
-        field(35; Description; Text[2048])
+        field(35; Description; Blob)
         {
             DataClassification = CustomerContent;
             Caption = 'Description';

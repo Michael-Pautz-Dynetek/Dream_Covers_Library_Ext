@@ -4,6 +4,7 @@ page 50523 "Book Authors Part"
     ApplicationArea = All;
     //UsageCategory = Administration;
     SourceTable = Authors;
+    CardPageId = "Author Card";
 
     layout
     {

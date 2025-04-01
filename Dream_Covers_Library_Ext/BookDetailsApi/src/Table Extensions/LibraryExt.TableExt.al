@@ -7,12 +7,14 @@ tableextension 50528 "Library Ext" extends Library
             trigger OnAfterValidate()
             var
                 BooksAuthors: Record BooksAuthors;
-                NameArray: List of [Text];
-                AuthorString, Item : Text;
-                Valid: Boolean;
+                NameArray, CodeArray : List of [Text];
+                AuthorString, Item, AuthorID : Text;
+                Valid, Found, IsFirst : Boolean;
             begin
 
                 NameArray := Author.Split(',');
+                CodeArray := "Author Codes".Split(',');
+                AuthorString := '';
                 BooksAuthors.SetRange("Book No.", "Book No.");
                 if BooksAuthors.FindFirst() then
                     repeat
@@ -24,6 +26,28 @@ tableextension 50528 "Library Ext" extends Library
                             BooksAuthors.Delete();
                         end;
                     until BooksAuthors.Next() = 0;
+                IsFirst := true;
+                foreach AuthorID in CodeArray do begin
+                    Found := false;
+                    BooksAuthors.SetRange("Book No.", "Book No.");
+                    if BooksAuthors.FindSet() then
+                        repeat
+                            if AuthorID = BooksAuthors."Author No." then
+                                Found := true;
+                        until BooksAuthors.Next() = 0;
+                    if Found then begin
+                        if IsFirst then begin
+                            AuthorString += AuthorID;
+                            IsFirst := false;
+                        end
+                        else
+                            AuthorString += ',' + AuthorID;
+                    end;
+                end;
+                Validate("Author Codes", AuthorString);
+                SetFilter("Author Filter", Rec."Author Codes".Replace(',', '|'));
+                Modify(true);
+                //SetFilter("Author Filter", Author.Replace(',', '|'));
                 // BooksAuthors.Reset();
                 // BooksAuthors.SetRange("Valid Link", false);
                 // //BooksAuthors.DeleteAll();

@@ -3,6 +3,7 @@ page 50518 "Author Books Part"
     PageType = ListPart;
     ApplicationArea = All;
     SourceTable = Library;
+    CardPageId = "Book Details Card";
 
     layout
     {

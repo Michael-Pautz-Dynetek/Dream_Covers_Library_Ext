@@ -115,11 +115,6 @@ page 50203 "Book Details Card"
                     ToolTip = 'Specifies the number of pages of the book.';
                 }
 
-                field(Description; Rec.Description)
-                {
-                    ApplicationArea = All;
-                }
-
                 field(Prequel; Rec.Prequel)
                 {
                     ApplicationArea = All;
@@ -134,14 +129,6 @@ page 50203 "Book Details Card"
                     Editable = false;
                     Caption = 'Sequel';
                     ToolTip = 'Specifies the sequel of the book.';
-                }
-                field(Cover; Rec.Cover)
-                {
-                    ApplicationArea = All;
-                    //Editable = false;
-                    ShowCaption = true;
-                    Caption = 'Book Cover';
-                    ToolTip = 'Specifies the cover of the book.';
                 }
             }
         }

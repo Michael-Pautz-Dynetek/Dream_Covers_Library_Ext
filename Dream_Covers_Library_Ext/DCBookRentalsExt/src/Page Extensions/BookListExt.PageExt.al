@@ -108,6 +108,17 @@ pageextension 50402 "Book List Ext" extends "Book List"
                     Page.Run(Page::"Inventory Dashboard");
                 end;
             }
+            action("Rank Monthly Rented")
+            {
+                Caption = 'Rank Monthly Rented';
+                Image = SortAscending;
+                trigger OnAction()
+                var
+                    RankRecentlyRented: Codeunit "Rank Recently Rented";
+                begin
+                    RankRecentlyRented.Run();
+                end;
+            }
 
         }
         addlast(Category_Category6)

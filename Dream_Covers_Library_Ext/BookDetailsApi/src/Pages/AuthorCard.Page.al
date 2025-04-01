@@ -20,6 +20,11 @@ page 50524 "Author Card"
                 {
                     ToolTip = 'Specifies the value of the Personal Name field.', Comment = '%';
                 }
+
+                field(Age; Rec.Age)
+                {
+                    ToolTip = 'Specifies the age of the author';
+                }
                 field("Birth Date"; Rec."Birth Date")
                 {
                     ToolTip = 'Specifies the value of the Birth Date field.', Comment = '%';
@@ -28,9 +33,11 @@ page 50524 "Author Card"
                 {
                     ToolTip = 'Specifies the value of the Death Date field.', Comment = '%';
                 }
-                field(Bio; Rec.Bio)
+                field(BioContent; BioContent)
                 {
                     ToolTip = 'Specifies the value of the Bio field.', Comment = '%';
+                    MultiLine = true;
+                    Caption = 'Bio';
                 }
             }
             group("Work Details")
@@ -63,10 +70,39 @@ page 50524 "Author Card"
         }
     }
 
+    actions
+    {
+        area(Processing)
+        {
+            action("Upload Image")
+            {
+                Caption = 'Upload Image';
+                Image = Download;
+                trigger OnAction()
+                var
+                    Instream: InStream;
+                    FilePath: Text;
+                begin
+                    if not UploadIntoStream('Upload Image', '', '', FilePath, Instream) then
+                        exit;
+                    Rec.Photo.ImportStream(Instream, '');
+                    Rec.Modify(true);
+                    CurrPage.Update();
+                end;
+            }
+        }
+    }
+
     trigger OnAfterGetRecord()
     var
         Library: Record Library;
+        InStream: InStream;
     begin
+        Rec.CalcFields(Bio);
+        if Rec.Bio.HasValue then begin
+            Rec.Bio.CreateInStream(InStream);
+            InStream.ReadText(BioContent);
+        end;
         SetBookListFilter(Rec."Author No.");
         //CurrPage.AuthorBooksPart.Page.SetTableView(Library);
         // CurrPage.AuthorBooksPart.Page.SetSelectionFilter();
@@ -104,6 +140,6 @@ page 50524 "Author Card"
     end;
 
     var
-
+        BioContent: Text;
 
 }

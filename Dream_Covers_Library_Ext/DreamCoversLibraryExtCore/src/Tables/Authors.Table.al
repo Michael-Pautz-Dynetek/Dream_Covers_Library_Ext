@@ -20,7 +20,7 @@ table 50214 Authors
             Caption = 'Death Date';
             DataClassification = ToBeClassified;
         }
-        field(30; Bio; Text[2048])
+        field(30; Bio; Blob)
         {
             Caption = 'Bio';
             DataClassification = ToBeClassified;
@@ -49,6 +49,11 @@ table 50214 Authors
         {
             Caption = 'Photo';
             DataClassification = CustomerContent;
+        }
+        field(200; "Books Rented Amount"; Integer)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Books Rented Amount';
         }
     }
 

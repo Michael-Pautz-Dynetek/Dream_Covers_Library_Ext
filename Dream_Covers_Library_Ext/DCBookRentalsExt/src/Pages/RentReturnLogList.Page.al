@@ -73,17 +73,17 @@ page 50418 "Rent Return Log List"
                     CurrPage.Update(false);
                 end;
             }
-            action("Rank Monthly Rented")
-            {
-                Caption = 'Rank Monthly Rented';
-                Image = SortAscending;
-                trigger OnAction()
-                var
-                    RankRecentlyRented: Codeunit "Rank Recently Rented";
-                begin
-                    RankRecentlyRented.Run();
-                end;
-            }
+            // action("Rank Monthly Rented")
+            // {
+            //     Caption = 'Rank Monthly Rented';
+            //     Image = SortAscending;
+            //     trigger OnAction()
+            //     var
+            //         RankRecentlyRented: Codeunit "Rank Recently Rented";
+            //     begin
+            //         RankRecentlyRented.Run();
+            //     end;
+            // }
             action("Filter Selected Book")
             {
                 Caption = 'Filter Selected Book';
