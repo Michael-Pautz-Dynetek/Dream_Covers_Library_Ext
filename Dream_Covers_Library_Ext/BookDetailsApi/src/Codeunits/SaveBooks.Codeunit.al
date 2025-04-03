@@ -1,19 +1,20 @@
 codeunit 50503 "Save Books"
 {
-    trigger OnRun()
-    begin
-
-    end;
 
     procedure InsertSelectedBooks(TempLibrary: Record Library; var SavedTitles: Text)
     var
         OpenLibraryApi: Codeunit "Open Library API";
         Library: Record Library;
+        Window: Dialog;
+        CurrentProcess: Text;
         BookExistsError: Label '%1 already exists in the system';
     begin
         Library.SetRange("Open Library ID", TempLibrary."Open Library ID");
 
         if not Library.FindSet() then begin
+            CurrentProcess := 'Saving details of ' + TempLibrary.Title + ' to Library.';
+            if GuiAllowed then
+                Window.Open(CurrentProcess);
             Library.Init();
             Library.Validate(Title, TempLibrary.Title);
             SavedTitles += Library.Title + '\';
@@ -23,11 +24,18 @@ codeunit 50503 "Save Books"
             Library.Author := TempLibrary.Author;
             Library.Validate("Author Codes", TempLibrary."Author Codes");
             OpenLibraryApi.GetBookCoverRequest(TempLibrary."Cover No.", Library);
+            //OpenLibraryApi.GetWorksDetailsRequest(TempLibrary."Open Library ID", Library);
             if OpenLibraryApi.GetWorksDetailsRequest(TempLibrary."Open Library ID", Library) = false then
-                exit;
+            exit;
 
             Library.Insert(true);
+            Window.Close();
+
+            CurrentProcess := 'Saving authors for ' + TempLibrary.Title + '.';
+            if GuiAllowed then
+                Window.Open(CurrentProcess);
             InsertAuthors(TempLibrary."Author Codes", Library."Book No.");
+            Window.Close();
         end
         else
             Message(BookExistsError, TempLibrary.Title);

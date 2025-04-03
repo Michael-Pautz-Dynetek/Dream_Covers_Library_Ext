@@ -8,16 +8,23 @@ codeunit 50501 "Open Library API"
         ResultObject, DataObject : JsonObject;
         LinesArray, AuthorCodeArray, AuthorNameArray : JsonArray;
         LinesToken, JsonToken : JsonToken;
+        Window: Dialog;
         Query, ReferenceID : Text;
         CoverKey: Code[50];
-        counter: Integer;
+        counter, InsertedRowCount, UpdateInterval : Integer;
     begin
         ReferenceID := 'Book Search: ' + SearchText;
-        Query := '/search.json?title=' + FormatSearchText(SearchText) + '&page=1&limit=100';
-        SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID);
+        Query := '/search.json?title=' + FormatSearchText(SearchText) + '&page=1&limit=500';
+        // SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID);
+        if not SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID) then
+            Error(GetLastErrorText());
         counter := 0;
         TempLibrary.DeleteAll();
-        if AATJsonHelper.GetJsonArray(ResultObject, 'docs', LinesArray) then
+        if AATJsonHelper.GetJsonArray(ResultObject, 'docs', LinesArray) then begin
+            InsertedRowCount := 0;
+            UpdateInterval := 10;
+            if GuiAllowed then
+                Window.Open('Loading Books: #1', InsertedRowCount);
             foreach LinesToken in LinesArray do begin
                 DataObject := LinesToken.AsObject();
                 TempLibrary.Init();
@@ -36,8 +43,13 @@ codeunit 50501 "Open Library API"
 
                 TempLibrary.Insert();
                 counter += 1;
-            end;
+                InsertedRowCount += 1;
 
+                if ((InsertedRowCount mod UpdateInterval) = 0) Or (InsertedRowCount = 1) then
+                    Window.Update(1, InsertedRowCount);
+            end;
+            Window.Close();
+        end;
     end;
 
     procedure GetBookCoverRequest(CoverNo: Code[50]; var Library: Record Library)
@@ -90,7 +102,9 @@ codeunit 50501 "Open Library API"
     begin
         ReferenceID := 'Book Details: ' + WorksKey;
         Query := WorksKey + '.json';
-        SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID);
+        //SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID);
+        if not SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID) then
+            Error(GetLastErrorText());
         Library.Description.CreateOutStream(OutStream);
         if ResultObject.Get('description', JsonToken) then
             if JsonToken.IsObject then
@@ -125,7 +139,9 @@ codeunit 50501 "Open Library API"
     begin
         ReferenceID := 'General Author: ' + AuthorKey;
         Query := '/search/authors.json?q=' + FormatSearchText(AuthorName);
-        SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID);
+        //SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID);
+        if not SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID) then
+            Error(GetLastErrorText());
         if AATJsonHelper.GetJsonArray(ResultObject, 'docs', LinesArray) then
             foreach LinesToken in LinesArray do begin
                 DataObject := LinesToken.AsObject();
@@ -150,7 +166,9 @@ codeunit 50501 "Open Library API"
     begin
         ReferenceID := 'Author Details: ' + AuthorKey;
         Query := '/authors/' + AuthorKey + '.json';
-        SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID);
+        //SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID);
+        if not SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID) then
+            Error(GetLastErrorText());
         //Authors.Validate("Author No.", AATJsonHelper.GetJsonTokenAsValue(ResultObject, 'key').AsCode());
         //if ResultObject.Get('birth_date', JsonToken) then begin
         DeathText := AATJsonHelper.SelectJsonValueAsText('$.death_date', false);
@@ -192,6 +210,7 @@ codeunit 50501 "Open Library API"
         exit(SearchText.Replace(' ', '+'));
     end;
 
+    [TryFunction]
     local procedure SendGetRequest(var ResultObject: JsonObject; var Query: Text; var AATRestHelper: Codeunit "AAT REST Helper"; ReferenceID: Text)
     begin
         GeneralSetup.Get(2);

@@ -17,10 +17,10 @@ codeunit 50416 "Overdue Update"
         Library.SetRange(Rented, true);
         if Library.FindSet() then
             repeat
-                BookRentals.CalcWeeksOverdue(Library);
-                BookRentals.UpdateOverdueLevel(Library);
-                //if BookRentals.CalcWeeksOverdue(Library) And BookRentals.UpdateOverdueLevel(Library) then
-                Library.Modify(true);
+                // BookRentals.CalcWeeksOverdue(Library);
+                // BookRentals.UpdateOverdueLevel(Library);
+                if BookRentals.CalcWeeksOverdue(Library) And BookRentals.UpdateOverdueLevel(Library) then
+                    Library.Modify(true);
             until Library.Next() = 0;
 
         BookRentals.GetHighestLevel();
