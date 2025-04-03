@@ -28,6 +28,7 @@ codeunit 50408 "Customer Renting Status"
         end;
     end;
 
+    [TryFunction]
     procedure OpenCustomerCardPage(Library: Record Library)
     var
         CustomerCard: Page "Customer Card";

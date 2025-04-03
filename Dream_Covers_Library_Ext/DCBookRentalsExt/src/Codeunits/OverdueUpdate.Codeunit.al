@@ -19,6 +19,7 @@ codeunit 50416 "Overdue Update"
             repeat
                 BookRentals.CalcWeeksOverdue(Library);
                 BookRentals.UpdateOverdueLevel(Library);
+                //if BookRentals.CalcWeeksOverdue(Library) And BookRentals.UpdateOverdueLevel(Library) then
                 Library.Modify(true);
             until Library.Next() = 0;
 

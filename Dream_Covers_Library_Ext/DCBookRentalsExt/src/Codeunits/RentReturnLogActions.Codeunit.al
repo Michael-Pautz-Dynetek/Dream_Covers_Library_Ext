@@ -1,10 +1,5 @@
 codeunit 50418 "Rent Return Log Actions"
 {
-    trigger OnRun()
-    begin
-
-    end;
-
     procedure FilterType(var RentReturnLogs: Record "Rent Return Log"; LogType: Text)
     begin
         RentReturnLogs.Reset();
@@ -17,7 +12,4 @@ codeunit 50418 "Rent Return Log Actions"
                 Error('The log type is not valid.');
         end;
     end;
-
-    var
-        myInt: Integer;
 }

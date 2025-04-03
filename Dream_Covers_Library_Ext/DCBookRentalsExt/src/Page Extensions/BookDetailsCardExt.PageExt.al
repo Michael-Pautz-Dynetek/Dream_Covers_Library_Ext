@@ -27,12 +27,4 @@ pageextension 50406 "Book Details Card Ext" extends "Book Details Card"
             }
         }
     }
-
-    actions
-    {
-        // Add changes to page actions here
-    }
-
-    var
-        myInt: Integer;
 }

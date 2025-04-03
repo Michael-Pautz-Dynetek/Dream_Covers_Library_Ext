@@ -106,8 +106,10 @@ codeunit 50401 "Book Rentals"
     local procedure OnBeforeInsertLibrary(var Rec: Record Library)
     begin
         if Rec."Date Rented" <> 0D then begin
-            CalcWeeksOverdue(Rec);
-            UpdateOverdueLevel(Rec);
+            if not CalcWeeksOverdue(Rec) then
+                Error(CalcWeeksError);
+            if not UpdateOverdueLevel(Rec) then
+                Error(UpdateOverdueLevelError);
         end;
     end;
 
@@ -115,11 +117,14 @@ codeunit 50401 "Book Rentals"
     local procedure OnBeforeModifyLibrary(var Rec: Record Library)
     begin
         if Rec."Date Rented" <> 0D then begin
-            CalcWeeksOverdue(Rec);
-            UpdateOverdueLevel(Rec);
+            if not CalcWeeksOverdue(Rec) then
+                Error(CalcWeeksError);
+            if not UpdateOverdueLevel(Rec) then
+                Error(UpdateOverdueLevelError);
         end;
     end;
 
+    [TryFunction]
     procedure UpdateOverdueLevel(var Library: Record Library)
     var
         GeneralSetup: Record "Library General Setup";
@@ -139,6 +144,7 @@ codeunit 50401 "Book Rentals"
             Library.Validate("Overdue Level", Library."Overdue Level"::Extreme);
     end;
 
+    [TryFunction]
     procedure CalcWeeksOverdue(var Library: Record Library)
     begin
         if Library."Date Rented" = 0D then
@@ -178,8 +184,10 @@ codeunit 50401 "Book Rentals"
         Library.SetRange(Rented, true);
         if Library.FindSet() then
             repeat
-                CalcWeeksOverdue(Library);
-                UpdateOverdueLevel(Library);
+                if not CalcWeeksOverdue(Library) then
+                    Error(CalcWeeksError);
+                if not UpdateOverdueLevel(Library) then
+                    Error(UpdateOverdueLevelError);
                 Library.Modify(true);
             until Library.Next() = 0;
 
@@ -217,4 +225,8 @@ codeunit 50401 "Book Rentals"
         end;
         RentReturnLog.Insert(true);
     end;
+
+    var
+        CalcWeeksError: Label 'An error occurred while calculating the number of weeks overdue.';
+        UpdateOverdueLevelError: Label 'An error occurred while updating the overdue level.';
 }

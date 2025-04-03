@@ -9,7 +9,7 @@ codeunit 50503 "Save Books"
     var
         OpenLibraryApi: Codeunit "Open Library API";
         Library: Record Library;
-        BookExistsError: Label '%1 already exist in the system';
+        BookExistsError: Label '%1 already exists in the system';
     begin
         Library.SetRange("Open Library ID", TempLibrary."Open Library ID");
 
@@ -22,10 +22,11 @@ codeunit 50503 "Save Books"
             //Library.Validate(Author, TempLibrary.Author);
             Library.Author := TempLibrary.Author;
             Library.Validate("Author Codes", TempLibrary."Author Codes");
-            OpenLibraryApi.GetWorksDetailsRequest(TempLibrary."Open Library ID", Library);
             OpenLibraryApi.GetBookCoverRequest(TempLibrary."Cover No.", Library);
-            Library.Insert(true);
+            if OpenLibraryApi.GetWorksDetailsRequest(TempLibrary."Open Library ID", Library) = false then
+                exit;
 
+            Library.Insert(true);
             InsertAuthors(TempLibrary."Author Codes", Library."Book No.");
         end
         else

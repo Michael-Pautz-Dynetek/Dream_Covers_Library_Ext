@@ -12,14 +12,37 @@ pageextension 50518 "Book Card Ext" extends "Book Details Card"
                 MultiLine = true;
                 Editable = false;
             }
+            field(Subjects; Rec.Subjects)
+            {
+                ApplicationArea = All;
+                ToolTip = 'Specifies the value of the Subjects field.', Comment = '%';
+                MultiLine = true;
+            }
+            field("Subject Places"; Rec."Subject Places")
+            {
+                ApplicationArea = All;
+                ToolTip = 'Specifies the value of the Subject Places field.', Comment = '%';
+                MultiLine = true;
+            }
+            field("Subject People"; Rec."Subject People")
+            {
+                ApplicationArea = All;
+                ToolTip = 'Specifies the value of the Subject People field.', Comment = '%';
+                MultiLine = true;
+            }
+
         }
         addlast(Content)
         {
-            part(BookAuthorsPart; "Book Authors Part")
+            group("Author Details")
             {
-                ApplicationArea = all;
-                SubPageLink = "Author No." = field("Author Filter");
+                part(BookAuthorsPart; "Book Authors Part")
+                {
+                    ApplicationArea = all;
+                    SubPageLink = "Author No." = field("Author Filter");
+                }
             }
+
         }
         addlast(FactBoxes)
         {

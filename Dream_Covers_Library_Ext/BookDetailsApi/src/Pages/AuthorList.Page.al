@@ -60,11 +60,13 @@ page 50508 "Authors List"
         {
             action("Popular Authors")
             {
-                Caption='Popular Authors';
-                Image=View;
+                Caption = 'Popular Authors';
+                Image = View;
                 trigger OnAction()
+                var
+                    AuthorManagement: Codeunit "Author Management";
                 begin
-                    
+                    AuthorManagement.PopularAuthors();
                 end;
             }
         }

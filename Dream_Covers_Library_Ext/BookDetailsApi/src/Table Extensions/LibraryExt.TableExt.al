@@ -62,5 +62,20 @@ tableextension 50528 "Library Ext" extends Library
         {
             FieldClass = FlowFilter;
         }
+        field(210; "Subject Places"; Text[2048])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Subject Places';
+        }
+        field(220; "Subjects"; Text[2048])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Subjects';
+        }
+        field(230; "Subject People"; Text[2048])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Subject People';
+        }
     }
 }

@@ -354,9 +354,12 @@ report 50413 "Custom Purchase Order Report"
                 }
             }
             trigger OnAfterGetRecord()
+            var
+                CalcTotalsError: Label 'Could not calculate report totals.';
             begin
                 FormatAddressFields("Purchase Header");
-                CalculateTotals("Purchase Header");
+                if not CalculateTotals("Purchase Header") then
+                    Error(CalcTotalsError);
             end;
         }
         dataitem("Company Information"; "Company Information")
@@ -409,6 +412,7 @@ report 50413 "Custom Purchase Order Report"
         FormatAddr.PurchHeaderShipTo(ShipToAddr, PurchaseHeader);
     end;
 
+    [TryFunction]
     local procedure CalculateTotals(var PurchaseHeader: Record "Purchase Header")
     var
         PurchLines: Record "Purchase Line";

@@ -1,9 +1,5 @@
 codeunit 50501 "Open Library API"
 {
-    trigger OnRun()
-    begin
-
-    end;
 
     procedure SearchBookRequest(SearchText: Text; var TempLibrary: Record Library temporary)
     var
@@ -12,7 +8,7 @@ codeunit 50501 "Open Library API"
         ResultObject, DataObject : JsonObject;
         LinesArray, AuthorCodeArray, AuthorNameArray : JsonArray;
         LinesToken, JsonToken : JsonToken;
-        Query, AuthorString, ReferenceID : Text;
+        Query, ReferenceID : Text;
         CoverKey: Code[50];
         counter: Integer;
     begin
@@ -28,14 +24,16 @@ codeunit 50501 "Open Library API"
                 TempLibrary.Validate("Book No.", Format(counter));
                 TempLibrary.Validate(Title, AATJsonHelper.GetJsonTokenAsValue(DataObject, 'title').AsText());
                 TempLibrary.Validate("Open Library ID", AATJsonHelper.GetJsonTokenAsValue(DataObject, 'key').AsCode());
+
                 if DataObject.Get('cover_edition_key', JsonToken) then
                     TempLibrary.Validate("Cover No.", JsonToken.AsValue().AsText());
-                if AATJsonHelper.GetJsonArray(DataObject, 'author_key', AuthorCodeArray) then begin
-                    FormatAuthors(TempLibrary."Author Codes", AuthorCodeArray, AuthorString);
-                end;
-                if AATJsonHelper.GetJsonArray(DataObject, 'author_name', AuthorNameArray) then begin
-                    FormatAuthors(TempLibrary.Author, AuthorNameArray, AuthorString);
-                end;
+
+                if AATJsonHelper.GetJsonArray(DataObject, 'author_key', AuthorCodeArray) then
+                    FormatArray(TempLibrary."Author Codes", AuthorCodeArray);
+
+                if AATJsonHelper.GetJsonArray(DataObject, 'author_name', AuthorNameArray) then
+                    FormatArray(TempLibrary.Author, AuthorNameArray);
+
                 TempLibrary.Insert();
                 counter += 1;
             end;
@@ -49,8 +47,8 @@ codeunit 50501 "Open Library API"
     begin
         ReferenceID := 'Book Cover: ' + CoverNo;
         Query := '/b/olid/' + CoverNo + '.jpg';
-        GetImageRequest(Query, InStream);
-        Library.Cover.ImportStream(InStream, '');
+        if GetImageRequest(Query, InStream) then
+            Library.Cover.ImportStream(InStream, '');
     end;
 
     procedure GetAuthorPhotoRequest(AuthorNo: Code[50]; var Author: Record Authors)
@@ -60,10 +58,11 @@ codeunit 50501 "Open Library API"
     begin
         ReferenceID := 'Author Photo: ' + AuthorNo;
         Query := '/a/olid/' + AuthorNo + '.jpg';
-        GetImageRequest(Query, InStream);
-        Author.Photo.ImportStream(InStream, '');
+        if GetImageRequest(Query, InStream) then
+            Author.Photo.ImportStream(InStream, '');
     end;
 
+    [TryFunction]
     local procedure GetImageRequest(Query: Text; var InStream: InStream)
     var
         AATRestHelper: Codeunit "AAT REST Helper";
@@ -79,10 +78,12 @@ codeunit 50501 "Open Library API"
             Error('Image download failure');
     end;
 
+    [TryFunction]
     procedure GetWorksDetailsRequest(WorksKey: Code[50]; var Library: Record Library)
     var
         AATRestHelper: Codeunit "AAT REST Helper";
         ResultObject, DataObject : JsonObject;
+        SubjectArray, PlacesArray, PeopleArray : JsonArray;
         JsonToken: JsonToken;
         OutStream: OutStream;
         Query, ReferenceID : Text;
@@ -92,17 +93,25 @@ codeunit 50501 "Open Library API"
         SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID);
         Library.Description.CreateOutStream(OutStream);
         if ResultObject.Get('description', JsonToken) then
-            if JsonToken.IsObject then begin
+            if JsonToken.IsObject then
                 //DataObject := JsonToken.AsObject();
                 //Library.Validate(Description, AATJsonHelper.GetJsonTokenAsValue(DataObject, 'value').AsText());
                 //Library.Validate(Description, AATJsonHelper.SelectJsonValueAsText('$.description.value', false));
-                OutStream.WriteText(AATJsonHelper.SelectJsonValueAsText('$.description.value', false));
-            end
+                OutStream.WriteText(AATJsonHelper.SelectJsonValueAsText('$.description.value', false))
             else
                 OutStream.WriteText(AATJsonHelper.SelectJsonValueAsText('$.description', false));
         // AATJsonHelper.GetJsonObject(ResultObject, 'created', DataObject);
         // Library.Validate("Date Created", AATJsonHelper.GetJsonTokenAsValue(DataObject, 'value').AsDateTime());
         Library.Validate("Date Created", AATJsonHelper.SelectJsonValueAsDateTime('$.created.value', false));
+
+        if AATJsonHelper.GetJsonArray(ResultObject, 'subjects', SubjectArray) then
+            FormatArray(Library.Subjects, SubjectArray, true);
+
+        if AATJsonHelper.GetJsonArray(ResultObject, 'subject_places', PlacesArray) then
+            FormatArray(Library."Subject Places", PlacesArray, true);
+
+        if AATJsonHelper.GetJsonArray(ResultObject, 'subject_people', PeopleArray) then
+            FormatArray(Library."Subject People", PeopleArray, true);
     end;
 
     procedure GetGeneralAuthorRequest(AuthorKey: Text; AuthorName: Text; var Authors: Record Authors)
@@ -195,22 +204,37 @@ codeunit 50501 "Open Library API"
         end;
     end;
 
-    local procedure FormatAuthors(var Field: Text; var AuthorArray: JsonArray; var AuthorString: Text)
+    //[TryFunction]
+    local procedure FormatArray(var Field: Text; var ValueArray: JsonArray/*; var AuthorString: Text*/)
     var
-        AuthorToken: JsonToken;
+        JsonToken: JsonToken;
         IsFirst: Boolean;
+        ResultString: Text;
     begin
-        AuthorString := '';
+        ResultString := '';
         IsFirst := true;
-        foreach AuthorToken in AuthorArray do begin
+        foreach JsonToken in ValueArray do begin
             if IsFirst <> true then
-                AuthorString += ',' + AuthorToken.AsValue().AsCode()
+                ResultString += ',' + JsonToken.AsValue().AsCode()
             else begin
-                AuthorString += AuthorToken.AsValue().AsCode();
+                ResultString += JsonToken.AsValue().AsCode();
                 IsFirst := false;
             end;
         end;
-        Field := AuthorString;
+        Field := ResultString;
+    end;
+
+    local procedure FormatArray(var Field: Text; var ValueArray: JsonArray; ListFormat: Boolean/*; var AuthorString: Text*/)
+    var
+        JsonToken: JsonToken;
+        IsFirst: Boolean;
+        ResultString: Text;
+    begin
+        ResultString := '';
+        IsFirst := true;
+        foreach JsonToken in ValueArray do
+            ResultString += JsonToken.AsValue().AsCode() + '\';
+        Field := ResultString;
     end;
 
     var

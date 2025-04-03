@@ -38,8 +38,10 @@ pageextension 50402 "Book List Ext" extends "Book List"
             trigger OnDrillDown()
             var
                 CustomerRentingStatus: Codeunit "Customer Renting Status";
+                CustomerCardError: Label 'The card page for %1 could not be opened.', Comment = 'Name of customer whose card page was not found.';
             begin
-                CustomerRentingStatus.OpenCustomerCardPage(Rec);
+                if not CustomerRentingStatus.OpenCustomerCardPage(Rec) then
+                    Error(CustomerCardError, Rec."Customer Name");
             end;
         }
     }

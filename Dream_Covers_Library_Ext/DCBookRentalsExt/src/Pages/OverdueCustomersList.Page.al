@@ -87,13 +87,6 @@ page 50409 "Overdue Customers List"
         }
     }
 
-    trigger OnOpenPage()
-    var
-        BookRentals: Codeunit "Book Rentals";
-    begin
-        // BookRentals.OpenPageUpdates();
-    end;
-
     var
         OverdueLevels: Enum "Overdue Levels";
 

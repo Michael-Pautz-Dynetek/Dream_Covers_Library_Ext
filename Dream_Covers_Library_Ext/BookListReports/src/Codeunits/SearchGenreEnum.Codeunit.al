@@ -16,7 +16,7 @@ codeunit 50310 "Search Genre Enum"
         IsFirst := true;
         FoundGenres := '';
         CaptionsList := BookGenres.Names;
-        foreach GenreName in CaptionsList do begin
+        foreach GenreName in CaptionsList do
             if GenreName.ToLower().Contains(Input.ToLower()) then begin
                 if not IsFirst then
                     FoundGenres += '|' + GenreName
@@ -25,7 +25,6 @@ codeunit 50310 "Search Genre Enum"
                     IsFirst := false;
                 end;
             end;
-        end;
         if IsFirst then begin
             FoundGenres := Format(BookGenres::" ");
             Message(NotFoundMessage, Input);
