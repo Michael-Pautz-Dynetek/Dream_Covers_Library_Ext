@@ -23,7 +23,8 @@ page 50502 "Search Book API"
                     begin
                         if SearchText <> '' then begin
                             Rec.DeleteAll();
-                            OpenLibraryAPI.SearchBookRequest(SearchText, Rec);
+                            if not OpenLibraryAPI.SearchBookRequest(SearchText, Rec) then
+                                Error(GetLastErrorText());
                             if not Rec.FindFirst() then begin
                                 Message('No books were found with this title.');
                                 SearchText := '';
@@ -77,7 +78,6 @@ page 50502 "Search Book API"
                 trigger OnAction()
                 var
                     SaveBooks: Codeunit "Save Books";
-                    TempLibrary: Record Library;
                     SaveSuccessfulMessage: Label 'The following book(s) have been added to the library:\';
                     SavedTitles: Text;
                 begin

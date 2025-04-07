@@ -14,6 +14,7 @@ codeunit 50416 "Overdue Update"
         Library: Record Library;
         BookRentals: Codeunit "Book Rentals";
     begin
+        Library.SetLoadFields(Rented, "Date Rented", "Weeks Overdue", "Overdue Level");
         Library.SetRange(Rented, true);
         if Library.FindSet() then
             repeat

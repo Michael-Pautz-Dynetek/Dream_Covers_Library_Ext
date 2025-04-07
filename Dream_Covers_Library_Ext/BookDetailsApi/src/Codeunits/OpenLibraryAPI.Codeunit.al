@@ -1,6 +1,6 @@
 codeunit 50501 "Open Library API"
 {
-
+    [TryFunction]
     procedure SearchBookRequest(SearchText: Text; var TempLibrary: Record Library temporary)
     var
         AATJsonHelper: Codeunit "AAT JSON Helper";
@@ -14,10 +14,19 @@ codeunit 50501 "Open Library API"
         counter, InsertedRowCount, UpdateInterval : Integer;
     begin
         ReferenceID := 'Book Search: ' + SearchText;
-        Query := '/search.json?title=' + FormatSearchText(SearchText) + '&page=1&limit=500';
+        Query := '/search.json?title=' + FormatSearchText(SearchText) + '&page=1&limit=100';
         // SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID);
-        if not SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID) then
+        GeneralSetup.Get(2);
+        AATRestHelper.LoadAPIConfig(GeneralSetup."Open Library API AAT No.");
+        AATRestHelper.Initialize('GET', AATRestHelper.GetAPIConfigBaseEndpoint() + Query);
+        AATRestHelper.SetContentType('application/json');
+        if AATRestHelper.Send(ReferenceID) then begin
+            AATJsonHelper.InitializeJsonObjectFromText(AATRestHelper.GetResponseContentAsText());
+            ResultObject := AATJsonHelper.GetJsonObject();
+        end else
             Error(GetLastErrorText());
+        // if not SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID) then
+        //     Error(GetLastErrorText());
         counter := 0;
         TempLibrary.DeleteAll();
         if AATJsonHelper.GetJsonArray(ResultObject, 'docs', LinesArray) then begin
@@ -102,9 +111,9 @@ codeunit 50501 "Open Library API"
     begin
         ReferenceID := 'Book Details: ' + WorksKey;
         Query := WorksKey + '.json';
-        //SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID);
-        if not SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID) then
-            Error(GetLastErrorText());
+        SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID);
+        // if not SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID) then
+        //     Error(GetLastErrorText());
         Library.Description.CreateOutStream(OutStream);
         if ResultObject.Get('description', JsonToken) then
             if JsonToken.IsObject then
@@ -139,9 +148,9 @@ codeunit 50501 "Open Library API"
     begin
         ReferenceID := 'General Author: ' + AuthorKey;
         Query := '/search/authors.json?q=' + FormatSearchText(AuthorName);
-        //SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID);
-        if not SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID) then
-            Error(GetLastErrorText());
+        SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID);
+        // if not SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID) then
+        //     Error(GetLastErrorText());
         if AATJsonHelper.GetJsonArray(ResultObject, 'docs', LinesArray) then
             foreach LinesToken in LinesArray do begin
                 DataObject := LinesToken.AsObject();
@@ -166,9 +175,9 @@ codeunit 50501 "Open Library API"
     begin
         ReferenceID := 'Author Details: ' + AuthorKey;
         Query := '/authors/' + AuthorKey + '.json';
-        //SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID);
-        if not SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID) then
-            Error(GetLastErrorText());
+        SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID);
+        // if not SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID) then
+        //     Error(GetLastErrorText());
         //Authors.Validate("Author No.", AATJsonHelper.GetJsonTokenAsValue(ResultObject, 'key').AsCode());
         //if ResultObject.Get('birth_date', JsonToken) then begin
         DeathText := AATJsonHelper.SelectJsonValueAsText('$.death_date', false);
@@ -210,7 +219,7 @@ codeunit 50501 "Open Library API"
         exit(SearchText.Replace(' ', '+'));
     end;
 
-    [TryFunction]
+    //[TryFunction]
     local procedure SendGetRequest(var ResultObject: JsonObject; var Query: Text; var AATRestHelper: Codeunit "AAT REST Helper"; ReferenceID: Text)
     begin
         GeneralSetup.Get(2);
@@ -220,7 +229,8 @@ codeunit 50501 "Open Library API"
         if AATRestHelper.Send(ReferenceID) then begin
             AATJsonHelper.InitializeJsonObjectFromText(AATRestHelper.GetResponseContentAsText());
             ResultObject := AATJsonHelper.GetJsonObject();
-        end;
+        end else
+            Error(GetLastErrorText());
     end;
 
     //[TryFunction]

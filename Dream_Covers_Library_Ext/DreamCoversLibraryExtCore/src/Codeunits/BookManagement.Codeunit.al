@@ -39,7 +39,6 @@ codeunit 50213 "Book Management"
 
     local procedure InsertSequel(CurrentLibrary: Record Library)
     var
-        NewLibrary: Record Library temporary;
         HasSequelMessage: Label '%1 book already has a sequel.', Comment = 'Title of the selected book.';
     begin
         if CurrentLibrary.Sequel <> '' then begin
@@ -47,7 +46,7 @@ codeunit 50213 "Book Management"
             exit;
         end
         else
-            InsertCurrentValues(NewLibrary, CurrentLibrary);
+            InsertCurrentValues(CurrentLibrary);
     end;
 
     local procedure SaveSequel(TempLibrary: Record Library temporary)
@@ -56,19 +55,24 @@ codeunit 50213 "Book Management"
     begin
         NewLibrary.Init();
         NewLibrary := TempLibrary;
+        NewLibrary.Validate("Book No.", '');
         NewLibrary.Insert(true);
     end;
 
-    local procedure InsertCurrentValues(NewLibrary: Record Library temporary; CurrentLibrary: Record Library)
+    local procedure InsertCurrentValues(CurrentLibrary: Record Library)
+    var
+        NewLibrary: Record Library temporary;
     begin
         NewLibrary.Init();
-        NewLibrary.Validate("Book No.");
-        NewLibrary.Validate(Author, CurrentLibrary.Author);
+        NewLibrary.Validate("Book No.", '1');
+        //NewLibrary.Validate(Author, CurrentLibrary.Author);
+        NewLibrary.Author := CurrentLibrary.Author;
+        NewLibrary.Validate("Author Codes", CurrentLibrary."Author Codes");
         NewLibrary.Validate(Series, CurrentLibrary.Series);
         NewLibrary.Validate(Prequel, CurrentLibrary.Title);
         //NewLibrary.Validate("Prequel ID", CurrentLibrary."Book No.");
         NewLibrary.Validate(Genre, CurrentLibrary.Genre);
-        NewLibrary.Insert(true);
+        NewLibrary.Insert();
 
         if Page.RunModal(Page::"Add Sequel Card", NewLibrary) = Action::LookupOK then begin
             SaveSequel(NewLibrary);

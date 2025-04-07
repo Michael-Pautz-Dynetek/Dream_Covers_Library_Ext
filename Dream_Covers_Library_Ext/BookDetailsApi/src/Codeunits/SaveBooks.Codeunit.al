@@ -9,6 +9,7 @@ codeunit 50503 "Save Books"
         CurrentProcess: Text;
         BookExistsError: Label '%1 already exists in the system';
     begin
+        Library.SetLoadFields("Book No.", "Open Library ID", Title, "Date Added", Author, "Author Codes", "Cover No.", Cover, "Date Created", Description, "Subject People", "Subject Places", Subjects);
         Library.SetRange("Open Library ID", TempLibrary."Open Library ID");
 
         if not Library.FindSet() then begin
@@ -26,7 +27,7 @@ codeunit 50503 "Save Books"
             OpenLibraryApi.GetBookCoverRequest(TempLibrary."Cover No.", Library);
             //OpenLibraryApi.GetWorksDetailsRequest(TempLibrary."Open Library ID", Library);
             if OpenLibraryApi.GetWorksDetailsRequest(TempLibrary."Open Library ID", Library) = false then
-            exit;
+                exit;
 
             Library.Insert(true);
             Window.Close();
@@ -50,6 +51,7 @@ codeunit 50503 "Save Books"
         CodeArray: List of [Text];
         Item, AuthorName : Text;
     begin
+        Authors.SetLoadFields("Author No.", Name, Bio, "Death Date", "Birth Date", "Personal Name", "Work Count", "Top Work");
         CodeArray := AuthorString.Split(',');
         foreach Item in CodeArray do begin
 

@@ -37,6 +37,7 @@ codeunit 50420 "Rank Recently Rented"
         PreviousRecord: Record Library;
         Rank: Integer;
     begin
+        //Library.SetLoadFields("Amount Rented Last Month","Rented Rank",)
         Library.SetCurrentKey("Amount Rented Last Month");
         Library.Ascending(false);
         if Library.FindSet() then
@@ -50,6 +51,4 @@ codeunit 50420 "Rank Recently Rented"
             until Library.Next() = 0;
     end;
 
-    var
-        myInt: Integer;
 }

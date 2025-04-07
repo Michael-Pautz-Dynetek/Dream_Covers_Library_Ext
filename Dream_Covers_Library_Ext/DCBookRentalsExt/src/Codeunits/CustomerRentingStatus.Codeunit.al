@@ -34,6 +34,7 @@ codeunit 50408 "Customer Renting Status"
         CustomerCard: Page "Customer Card";
         Customer: Record Customer;
     begin
+        Customer.SetLoadFields("No.");
         Customer.Get(Library."Customer No.");
         CustomerCard.SetRecord(Customer);
         CustomerCard.Run();

@@ -19,6 +19,7 @@ codeunit 50401 "Book Rentals"
         OverdueLevels: Enum "Overdue Levels";
         ConfirmReturn: Label 'Do you want to return "%1"?', Comment = 'Title of the selected book.';
     begin
+        CurrentLibrary.SetLoadFields("Book No.", Title, Rented, "Customer No.", "Date Rented", "Weeks Overdue", "Overdue Level");
         if Confirm(ConfirmReturn, false, CurrentLibrary.Title) then begin
             SetProbationDate(Customer, CurrentLibrary);
             CurrentLibrary.Validate(Rented, false);
@@ -37,6 +38,7 @@ codeunit 50401 "Book Rentals"
     // that was of extreme overdue level
     local procedure SetProbationDate(var Customer: Record Customer; Library: Record Library)
     begin
+        Customer.SetLoadFields("No.", "Highest Overdue Level", "Probation Date");
         if Customer.Get(Library."Customer No.") then begin
             if (Customer."Highest Overdue Level" = "Overdue Levels"::Extreme) AND (Customer."Probation Date" = 0D) then
                 Customer.Validate("Probation Date", CalcDate('<+6M>', Today));
@@ -51,6 +53,8 @@ codeunit 50401 "Book Rentals"
         Library: Record Library;
         OverdueLevels: Enum "Overdue Levels";
     begin
+        Library.SetLoadFields("Customer No.", "Overdue Level");
+        Customer.SetLoadFields("Highest Overdue Level");
         Library.SetRange("Customer No.", Customer."No.");
         OverdueLevels := "Overdue Levels"::" ";
         if Library.FindSet() then begin
@@ -156,6 +160,7 @@ codeunit 50401 "Book Rentals"
     var
         Library: Record Library;
     begin
+        Library.SetLoadFields(Rented, "Customer No.", "Overdue Level");
         Library.SetRange(Rented, true);
         if Library.FindSet() then
             repeat
@@ -168,6 +173,7 @@ codeunit 50401 "Book Rentals"
         Customer: Record Customer;
         OverdueLevels: Enum "Overdue Levels";
     begin
+        Customer.SetLoadFields("No.", "Probation Date", "Highest Overdue Level");
         if Customer.Get(Library."Customer No.") then begin
             if (Today < Customer."Probation Date") AND (Customer."Highest Overdue Level" = OverdueLevels::Extreme) then
                 exit;
@@ -181,6 +187,7 @@ codeunit 50401 "Book Rentals"
     var
         Library: Record Library;
     begin
+        Library.SetLoadFields(Rented, "Date Rented", "Weeks Overdue", "Overdue Level");
         Library.SetRange(Rented, true);
         if Library.FindSet() then
             repeat

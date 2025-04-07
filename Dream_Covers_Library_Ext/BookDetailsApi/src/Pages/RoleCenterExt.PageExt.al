@@ -1,9 +1,5 @@
 pageextension 50522 "Role Center Ext" extends "Business Manager Role Center"
 {
-    layout
-    {
-
-    }
 
     actions
     {

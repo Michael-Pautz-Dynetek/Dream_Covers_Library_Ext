@@ -11,6 +11,7 @@ codeunit 50411 "Clear Probation Date"
         ProbationDatesRemovedMessage: Label 'All completed probation dates have been removed.';
         NoProbationDatesMessage: Label 'No probation dates were found.';
     begin
+        Customer.SetLoadFields("Probation Date", "Highest Overdue Level");
         Customer.SetFilter("Probation Date", '<>%1', 0D);
         if Customer.FindSet() then begin
             repeat

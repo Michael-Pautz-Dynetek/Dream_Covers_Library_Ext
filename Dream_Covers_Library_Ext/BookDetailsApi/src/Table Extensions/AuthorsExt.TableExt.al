@@ -14,8 +14,6 @@ tableextension 50527 "Authors Ext" extends Authors
         modify("Birth Date")
         {
             trigger OnAfterValidate()
-            var
-                myInt: Integer;
             begin
                 if ("Death Date" = 0D) and ("Birth Date" <> 0D) then
                     Validate(Age, Today.Year() - "Birth Date".Year())
@@ -24,17 +22,4 @@ tableextension 50527 "Authors Ext" extends Authors
             end;
         }
     }
-
-    keys
-    {
-        // Add changes to keys here
-    }
-
-    fieldgroups
-    {
-        // Add changes to field groups here
-    }
-
-    var
-        myInt: Integer;
 }

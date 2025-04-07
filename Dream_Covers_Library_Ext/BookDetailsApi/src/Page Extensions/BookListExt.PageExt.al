@@ -21,7 +21,7 @@ pageextension 50510 "Book List Author Ext." extends "Book List"
     {
         // Add changes to page actions here
         addlast(Processing)
-        { 
+        {
             action("View Authors")
             {
                 Caption = 'View Authors';
@@ -58,6 +58,4 @@ pageextension 50510 "Book List Author Ext." extends "Book List"
         }
     }
 
-    var
-        myInt: Integer;
 }

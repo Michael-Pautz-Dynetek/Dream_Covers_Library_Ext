@@ -95,7 +95,6 @@ page 50524 "Author Card"
 
     trigger OnAfterGetRecord()
     var
-        Library: Record Library;
         InStream: InStream;
     begin
         Rec.CalcFields(Bio);
@@ -104,8 +103,6 @@ page 50524 "Author Card"
             InStream.ReadText(BioContent);
         end;
         SetBookListFilter(Rec."Author No.");
-        //CurrPage.AuthorBooksPart.Page.SetTableView(Library);
-        // CurrPage.AuthorBooksPart.Page.SetSelectionFilter();
     end;
 
     local procedure SetBookListFilter(AuthorNo: Code[20]): Text

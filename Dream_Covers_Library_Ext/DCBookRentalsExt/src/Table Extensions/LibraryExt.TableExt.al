@@ -23,6 +23,7 @@ tableextension 50403 "Library Ext" extends Library
             var
                 Customer: Record Customer;
             begin
+                Customer.SetLoadFields("No.", "Rent Allowed", "Highest Overdue Level", "Amount of Books", "Book Limit", Name, "Probation Date");
                 if Customer.Get(Rec."Customer No.") then begin
                     RentOutWarnings(Customer);
                 end;

@@ -12,8 +12,6 @@ tableextension 50407 "Customers Ext" extends Customer
             DataClassification = CustomerContent;
             Caption = 'Highest Overdue Level';
             trigger OnValidate()
-            var
-                myInt: Integer;
             begin
                 SetRentAllowed();
             end;
@@ -34,8 +32,6 @@ tableextension 50407 "Customers Ext" extends Customer
             DataClassification = CustomerContent;
             Caption = 'Probation Date';
             trigger OnValidate()
-            var
-                myInt: Integer;
             begin
                 if "Probation Date" = 0D then begin
                     Validate("Rent Allowed", true);

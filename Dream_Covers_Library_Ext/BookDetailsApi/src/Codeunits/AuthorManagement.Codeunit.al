@@ -10,6 +10,7 @@ codeunit 50529 "Author Management"
     begin
         Counter := 1;
         Result := '';
+        Authors.SetLoadFields("Books Rented Amount", Name);
         Authors.SetCurrentKey("Books Rented Amount");
         Authors.Ascending(false);
         if Authors.FindFirst() then

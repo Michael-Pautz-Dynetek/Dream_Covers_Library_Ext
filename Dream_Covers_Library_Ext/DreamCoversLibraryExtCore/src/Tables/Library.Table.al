@@ -206,11 +206,6 @@ table 50200 Library
         end;
     end;
 
-    trigger OnModify()
-    begin
-
-    end;
-
     trigger OnDelete()
     var
         Library: Record Library;
@@ -219,11 +214,6 @@ table 50200 Library
             exit
         else
             UpdateSequel(Library);
-    end;
-
-    trigger OnRename()
-    begin
-
     end;
 
     local procedure UpdateSequel(Library: Record Library)

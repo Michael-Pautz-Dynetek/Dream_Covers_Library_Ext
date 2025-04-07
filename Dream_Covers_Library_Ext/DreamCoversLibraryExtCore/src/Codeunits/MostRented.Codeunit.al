@@ -11,6 +11,7 @@ codeunit 50204 "Most Rented"
         Result := '';
         Books.SetCurrentKey("Amount Rented");
         Books.Ascending(false);
+        Books.SetLoadFields(Title);
         if Books.FindFirst() then
             repeat
                 Result += '\' + Format(Counter) + '. ' + Books.Title + '\';
