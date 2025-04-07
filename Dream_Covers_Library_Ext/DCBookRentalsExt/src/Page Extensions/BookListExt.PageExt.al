@@ -55,6 +55,7 @@ pageextension 50402 "Book List Ext" extends "Book List"
                 Caption = 'Rent/Return Book';
                 Image = Customer;
                 ToolTip = 'Rent or return the selected book.';
+                ApplicationArea=all;
 
                 trigger OnAction()
                 var
@@ -68,6 +69,8 @@ pageextension 50402 "Book List Ext" extends "Book List"
                 Caption = 'Order by Rank';
                 Image = SortAscending;
                 Tooltip = 'Sort the list by the rank ascending';
+                ApplicationArea=all;
+
                 trigger OnAction()
                 begin
                     Rec.SetCurrentKey("Rented Rank");
@@ -80,6 +83,8 @@ pageextension 50402 "Book List Ext" extends "Book List"
                 Caption = 'View Overdue Customers';
                 ToolTip = 'Open a list page of customers with overdue books';
                 Image = View;
+                ApplicationArea=all;
+
                 trigger OnAction()
                 var
                     BookRentals: Codeunit "Book Rentals";
@@ -94,6 +99,8 @@ pageextension 50402 "Book List Ext" extends "Book List"
                 Caption = 'View Rent/Return Logs';
                 ToolTip = 'Open the Rent/Return log page.';
                 Image = Log;
+                ApplicationArea=all;
+
                 trigger OnAction()
                 begin
                     Page.Run(Page::"Rent Return Log List");
@@ -105,6 +112,8 @@ pageextension 50402 "Book List Ext" extends "Book List"
                 Caption = 'View Inventory Dashboard';
                 ToolTip = 'Open the Library Inventory Dashboard page.';
                 Image = View;
+                ApplicationArea=all;
+
                 trigger OnAction()
                 begin
                     Page.Run(Page::"Inventory Dashboard");
@@ -114,6 +123,8 @@ pageextension 50402 "Book List Ext" extends "Book List"
             {
                 Caption = 'Rank Monthly Rented';
                 Image = SortAscending;
+                ApplicationArea=all;
+                
                 trigger OnAction()
                 var
                     RankRecentlyRented: Codeunit "Rank Recently Rented";

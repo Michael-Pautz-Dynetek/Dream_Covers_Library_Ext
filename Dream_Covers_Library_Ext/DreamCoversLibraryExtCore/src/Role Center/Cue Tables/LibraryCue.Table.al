@@ -1,6 +1,7 @@
 table 50210 "Library Cue"
 {
     DataClassification = ToBeClassified;
+    
 
     fields
     {

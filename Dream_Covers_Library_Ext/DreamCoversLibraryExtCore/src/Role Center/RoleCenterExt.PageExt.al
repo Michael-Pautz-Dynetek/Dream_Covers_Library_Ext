@@ -7,7 +7,7 @@ pageextension 50213 "Role Center Part Ext" extends "Business Manager Role Center
         {
             part("Library Inventory Cues"; "Library Inventory Cues")
             {
-
+                ApplicationArea=all;
             }
         }
     }
@@ -21,6 +21,7 @@ pageextension 50213 "Role Center Part Ext" extends "Business Manager Role Center
                 Caption = 'View Book List';
                 RunObject = Page "Book List";
                 RunPageMode = View;
+                ApplicationArea=all;
             }
         }
     }

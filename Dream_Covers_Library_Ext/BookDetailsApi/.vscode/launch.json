@@ -1,12 +1,13 @@
 {
     "version": "0.2.0",
     "configurations": [
+        
         {
             "name": "Training Server",
             "request": "launch",
             "type": "al",
             "environmentType": "OnPrem",
-            "server": "http://trainingserver",
+            "server": "http://trainingserver1",
             "serverInstance": "BC",
             "authentication": "UserPassword",
             "startupObjectId": 9022,

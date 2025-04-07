@@ -3,6 +3,7 @@ page 50402 "Rent Book Card"
     PageType = Card;
     Caption = 'Rent Book';
     SourceTable = Library;
+    ApplicationArea=all;
 
     layout
     {

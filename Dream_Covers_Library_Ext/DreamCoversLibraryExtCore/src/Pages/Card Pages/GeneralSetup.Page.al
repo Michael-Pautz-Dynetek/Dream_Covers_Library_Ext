@@ -7,6 +7,7 @@ page 50214 "General Page Setup"
     InsertAllowed = false;
     DeleteAllowed = false;
     UsageCategory = Administration;
+    ApplicationArea=all;
 
 
     layout

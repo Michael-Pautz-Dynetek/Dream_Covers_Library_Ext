@@ -27,6 +27,7 @@ pageextension 50510 "Book List Author Ext." extends "Book List"
                 Caption = 'View Authors';
                 Image = View;
                 ToolTip = 'View the Author list page.';
+                ApplicationArea=all;
                 trigger OnAction()
                 begin
                     Page.Run(Page::"Authors List");
@@ -38,6 +39,7 @@ pageextension 50510 "Book List Author Ext." extends "Book List"
                 Caption = 'Import Books';
                 Image = Import;
                 ToolTip = 'Import books from Open Library API.';
+                ApplicationArea=all;
                 trigger OnAction()
                 begin
                     Page.Run(Page::"Search Book API");

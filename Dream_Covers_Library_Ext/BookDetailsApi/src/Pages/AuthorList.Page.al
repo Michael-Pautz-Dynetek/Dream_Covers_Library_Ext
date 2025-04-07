@@ -62,6 +62,8 @@ page 50508 "Authors List"
             {
                 Caption = 'Popular Authors';
                 Image = View;
+                ApplicationArea=all;
+                
                 trigger OnAction()
                 var
                     AuthorManagement: Codeunit "Author Management";

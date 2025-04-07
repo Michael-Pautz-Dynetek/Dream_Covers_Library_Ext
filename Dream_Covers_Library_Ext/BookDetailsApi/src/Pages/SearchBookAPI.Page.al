@@ -17,14 +17,17 @@ page 50502 "Search Book API"
                 {
                     Caption = 'Book Title';
                     ToolTip = 'Book title to search from Open Library API.';
+                    ApplicationArea = all;
+
                     trigger OnValidate()
                     var
                         OpenLibraryAPI: Codeunit "Open Library API";
                     begin
                         if SearchText <> '' then begin
                             Rec.DeleteAll();
-                            if not OpenLibraryAPI.SearchBookRequest(SearchText, Rec) then
-                                Error(GetLastErrorText());
+                            OpenLibraryAPI.SearchBookRequest(SearchText, Rec);
+                            // if not OpenLibraryAPI.SearchBookRequest(SearchText, Rec) then
+                            //     Error(GetLastErrorText());
                             if not Rec.FindFirst() then begin
                                 Message('No books were found with this title.');
                                 SearchText := '';
@@ -75,6 +78,8 @@ page 50502 "Search Book API"
             {
                 Caption = 'Save Book(s)';
                 Image = Save;
+                ApplicationArea = all;
+
                 trigger OnAction()
                 var
                     SaveBooks: Codeunit "Save Books";
@@ -94,6 +99,7 @@ page 50502 "Search Book API"
             {
                 Caption = 'View Book List';
                 Image = View;
+                ApplicationArea = all;
                 trigger OnAction()
                 begin
                     Page.Run(Page::"Book List");
@@ -103,6 +109,7 @@ page 50502 "Search Book API"
             {
                 Caption = 'View Authors List';
                 Image = View;
+                ApplicationArea = all;
                 trigger OnAction()
                 begin
                     Page.Run(Page::"Authors List");

@@ -78,6 +78,7 @@ page 50524 "Author Card"
             {
                 Caption = 'Upload Image';
                 Image = Download;
+                ApplicationArea=all;
                 trigger OnAction()
                 var
                     Instream: InStream;

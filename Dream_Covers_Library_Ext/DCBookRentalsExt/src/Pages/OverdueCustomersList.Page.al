@@ -76,6 +76,7 @@ page 50409 "Overdue Customers List"
             {
                 Caption = 'Clear Completed Probation Dates';
                 Image = Delete;
+                ApplicationArea=all;
                 trigger OnAction()
                 var
                     ClearProbationDate: Codeunit "Clear Probation Date";

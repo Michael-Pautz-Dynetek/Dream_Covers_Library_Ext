@@ -9,6 +9,7 @@ pageextension 50425 "Role Center Nav Ext" extends "Business Manager Role Center"
                 Caption = 'View Inventory Dashboard';
                 RunObject = Page "Inventory Dashboard";
                 RunPageMode = View;
+                ApplicationArea=all;
             }
         }
     }

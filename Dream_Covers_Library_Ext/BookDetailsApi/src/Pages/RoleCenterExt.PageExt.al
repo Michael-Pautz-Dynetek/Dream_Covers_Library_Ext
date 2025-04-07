@@ -11,6 +11,7 @@ pageextension 50522 "Role Center Ext" extends "Business Manager Role Center"
                 Caption = 'Import Books';
                 RunObject = Page "Search Book API";
                 RunPageMode = View;
+                ApplicationArea=all;
             }
         }
     }

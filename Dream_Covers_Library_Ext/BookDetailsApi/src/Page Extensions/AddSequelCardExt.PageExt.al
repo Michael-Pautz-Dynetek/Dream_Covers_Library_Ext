@@ -22,6 +22,7 @@ pageextension 50530 "Add Sequel Card Ext" extends "Add Sequel Card"
             {
                 Caption = 'Upload Book Cover';
                 Image = Download;
+                ApplicationArea=all;
                 trigger OnAction()
                 var
                     Instream: InStream;
@@ -36,7 +37,4 @@ pageextension 50530 "Add Sequel Card Ext" extends "Add Sequel Card"
             }
         }
     }
-
-    var
-        myInt: Integer;
 }

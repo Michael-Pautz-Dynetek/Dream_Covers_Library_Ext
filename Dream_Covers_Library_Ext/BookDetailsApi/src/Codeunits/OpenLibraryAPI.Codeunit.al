@@ -1,6 +1,6 @@
 codeunit 50501 "Open Library API"
 {
-    [TryFunction]
+    //[TryFunction]
     procedure SearchBookRequest(SearchText: Text; var TempLibrary: Record Library temporary)
     var
         AATJsonHelper: Codeunit "AAT JSON Helper";
@@ -16,7 +16,7 @@ codeunit 50501 "Open Library API"
         ReferenceID := 'Book Search: ' + SearchText;
         Query := '/search.json?title=' + FormatSearchText(SearchText) + '&page=1&limit=100';
         // SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID);
-        GeneralSetup.Get(2);
+        GeneralSetup.Get();
         AATRestHelper.LoadAPIConfig(GeneralSetup."Open Library API AAT No.");
         AATRestHelper.Initialize('GET', AATRestHelper.GetAPIConfigBaseEndpoint() + Query);
         AATRestHelper.SetContentType('application/json');
@@ -222,7 +222,7 @@ codeunit 50501 "Open Library API"
     //[TryFunction]
     local procedure SendGetRequest(var ResultObject: JsonObject; var Query: Text; var AATRestHelper: Codeunit "AAT REST Helper"; ReferenceID: Text)
     begin
-        GeneralSetup.Get(2);
+        GeneralSetup.Get();
         AATRestHelper.LoadAPIConfig(GeneralSetup."Open Library API AAT No.");
         AATRestHelper.Initialize('GET', AATRestHelper.GetAPIConfigBaseEndpoint() + Query);
         AATRestHelper.SetContentType('application/json');

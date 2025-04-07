@@ -53,6 +53,7 @@ page 50418 "Rent Return Log List"
             {
                 Caption = 'View Rent Logs';
                 Image = View;
+                ApplicationArea=all;
                 trigger OnAction()
                 var
                     RentReturnLogActions: Codeunit "Rent Return Log Actions";
@@ -65,6 +66,7 @@ page 50418 "Rent Return Log List"
             {
                 Caption = 'View Return Logs';
                 Image = View;
+                ApplicationArea=all;
                 trigger OnAction()
                 var
                     RentReturnLogActions: Codeunit "Rent Return Log Actions";
@@ -88,6 +90,7 @@ page 50418 "Rent Return Log List"
             {
                 Caption = 'Filter Selected Book';
                 Image = Filter;
+                ApplicationArea=all;
                 trigger OnAction()
                 var
                     RentReturnLog: Record "Rent Return Log";

@@ -9,6 +9,7 @@ pageextension 50301 "Book List Ext" extends "Book List"
                 Image = RelatedInformation;
                 Caption = 'Library Reporting Page';
                 ToolTip = 'Open the reporting page of the book list.';
+                ApplicationArea=all;
 
                 trigger OnAction()
                 var

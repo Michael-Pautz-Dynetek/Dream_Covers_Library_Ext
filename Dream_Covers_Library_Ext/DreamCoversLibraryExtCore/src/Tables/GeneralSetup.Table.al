@@ -76,14 +76,14 @@ table 50213 "Library General Setup"
     begin
         if RecordHasBeenRead then
             exit;
-        Get(2);
+        Get();
         RecordHasBeenRead := true;
     end;
 
     procedure InsertIfNotExists()
     begin
         Reset();
-        if not Get(2) then begin
+        if not Get() then begin
             Init();
             Insert(true);
         end;

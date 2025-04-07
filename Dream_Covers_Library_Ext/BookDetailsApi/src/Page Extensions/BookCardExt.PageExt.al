@@ -62,6 +62,8 @@ pageextension 50518 "Book Card Ext" extends "Book Details Card"
             {
                 Caption = 'Upload Book Cover';
                 Image = Download;
+                ApplicationArea=all;
+                
                 trigger OnAction()
                 var
                     Instream: InStream;

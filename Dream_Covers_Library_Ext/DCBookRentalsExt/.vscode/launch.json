@@ -6,7 +6,7 @@
             "request": "launch",
             "type": "al",
             "environmentType": "OnPrem",
-            "server": "http://trainingserver",
+            "server": "http://trainingserver1",
             "serverInstance": "BC",
             "authentication": "UserPassword",
             "startupObjectId": 9022,
