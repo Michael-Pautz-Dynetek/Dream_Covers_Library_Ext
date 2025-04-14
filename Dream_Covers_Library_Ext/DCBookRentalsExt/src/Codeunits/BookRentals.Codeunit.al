@@ -133,7 +133,7 @@ codeunit 50401 "Book Rentals"
     var
         GeneralSetup: Record "Library General Setup";
     begin
-        GeneralSetup.Get(2);
+        GeneralSetup.Get();
         case Library."Weeks Overdue" of
             0:
                 Library.Validate("Overdue Level", Library."Overdue Level"::" ");

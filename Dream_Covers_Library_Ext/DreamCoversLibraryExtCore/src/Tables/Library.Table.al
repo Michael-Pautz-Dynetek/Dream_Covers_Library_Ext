@@ -162,7 +162,7 @@ table 50200 Library
             ToolTip = 'Specifies how many times the book has been rented in the last month.';
         }
 
-        field(160; "Prequel ID"; Integer)
+        field(160; "Prequel ID"; Code[20])
         {
             DataClassification = CustomerContent;
             Caption = 'Prequel ID';
@@ -200,7 +200,7 @@ table 50200 Library
     trigger OnInsert()
     begin
         if "Book No." = '' then begin
-            GeneralSetup.Get(2);
+            GeneralSetup.Get();
             GeneralSetup.TestField("Book Nos.");
             Validate("Book No.", NoSeriesMgt.GetNextNo(GeneralSetup."Book Nos."));
         end;
@@ -208,19 +208,26 @@ table 50200 Library
 
     trigger OnDelete()
     var
-        Library: Record Library;
+        BooksAuthors: Record BooksAuthors;
     begin
-        if Rec."Prequel ID" = 0 then
-            exit
-        else
-            UpdateSequel(Library);
+        if Rec."Prequel ID" <> '' then
+            UpdateSequel();
+
+        BooksAuthors.SetRange("Book No.", Rec."Book No.");
+        if BooksAuthors.FindSet() then
+            repeat
+                BooksAuthors.Delete();
+            until BooksAuthors.Next() = 0;
     end;
 
-    local procedure UpdateSequel(Library: Record Library)
+    local procedure UpdateSequel()
+    var
+        Library: Record Library;
     begin
-        Library.Get(Rec."Prequel ID");
-        Library.Validate(Sequel, '');
-        Library.Modify(true);
+        if Library.Get(Rec."Prequel ID") then begin
+            Library.Validate(Sequel, '');
+            Library.Modify(true);
+        end;
     end;
 
     var

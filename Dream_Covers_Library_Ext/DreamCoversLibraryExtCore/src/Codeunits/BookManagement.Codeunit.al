@@ -52,11 +52,24 @@ codeunit 50213 "Book Management"
     local procedure SaveSequel(TempLibrary: Record Library temporary)
     var
         NewLibrary: Record Library;
+        BooksAuthors: Record BooksAuthors;
+        AuthorCodes: List of [Text];
+        Item: Text;
     begin
         NewLibrary.Init();
         NewLibrary := TempLibrary;
         NewLibrary.Validate("Book No.", '');
+        
         NewLibrary.Insert(true);
+        AuthorCodes := NewLibrary."Author Codes".Split(',');
+        foreach Item in AuthorCodes do begin
+            BooksAuthors.Init();
+            BooksAuthors.Validate("Book No.", NewLibrary."Book No.");
+            BooksAuthors.Validate("Author No.", Item);
+            BooksAuthors.Validate("Valid Link", true);
+            // BooksAuthors.Validate("Author Name",);
+            BooksAuthors.Insert(true);
+        end;
     end;
 
     local procedure InsertCurrentValues(CurrentLibrary: Record Library)
@@ -70,7 +83,7 @@ codeunit 50213 "Book Management"
         NewLibrary.Validate("Author Codes", CurrentLibrary."Author Codes");
         NewLibrary.Validate(Series, CurrentLibrary.Series);
         NewLibrary.Validate(Prequel, CurrentLibrary.Title);
-        //NewLibrary.Validate("Prequel ID", CurrentLibrary."Book No.");
+        NewLibrary.Validate("Prequel ID", CurrentLibrary."Book No.");
         NewLibrary.Validate(Genre, CurrentLibrary.Genre);
         NewLibrary.Insert();
 

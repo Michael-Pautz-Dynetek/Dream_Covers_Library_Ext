@@ -15,7 +15,7 @@ codeunit 50408 "Customer Renting Status"
             Message(ProbationWarning, Customer.Name, Customer."Probation Date");
             exit;
         end;
-        GeneralSetup.Get(2);
+        GeneralSetup.Get();
         case Customer."Highest Overdue Level" of
             "Overdue Levels"::Mild:
                 Message(MildWarning, Customer.Name);

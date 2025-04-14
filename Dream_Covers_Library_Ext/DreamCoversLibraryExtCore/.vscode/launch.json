@@ -6,7 +6,7 @@
             "request": "launch",
             "type": "al",
             "environmentType": "OnPrem",
-            "server": "http://trainingserver1",
+            "server": "http://trainingcontainer1",
             
             "serverInstance": "BC",
             "authentication": "UserPassword",

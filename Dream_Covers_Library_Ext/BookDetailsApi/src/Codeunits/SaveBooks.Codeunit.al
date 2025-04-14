@@ -25,9 +25,9 @@ codeunit 50503 "Save Books"
             Library.Author := TempLibrary.Author;
             Library.Validate("Author Codes", TempLibrary."Author Codes");
             OpenLibraryApi.GetBookCoverRequest(TempLibrary."Cover No.", Library);
-            //OpenLibraryApi.GetWorksDetailsRequest(TempLibrary."Open Library ID", Library);
-            if OpenLibraryApi.GetWorksDetailsRequest(TempLibrary."Open Library ID", Library) = false then
-                exit;
+            OpenLibraryApi.GetWorksDetailsRequest(TempLibrary."Open Library ID", Library);
+            // if OpenLibraryApi.GetWorksDetailsRequest(TempLibrary."Open Library ID", Library) = false then
+            //     exit;
 
             Library.Insert(true);
             Window.Close();

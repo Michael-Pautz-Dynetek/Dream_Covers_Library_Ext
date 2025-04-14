@@ -68,8 +68,10 @@ codeunit 50501 "Open Library API"
     begin
         ReferenceID := 'Book Cover: ' + CoverNo;
         Query := '/b/olid/' + CoverNo + '.jpg';
-        if GetImageRequest(Query, InStream) then
-            Library.Cover.ImportStream(InStream, '');
+        GetImageRequest(Query, InStream);
+        Library.Cover.ImportStream(InStream, '');
+        // if GetImageRequest(Query, InStream) then
+        //     Library.Cover.ImportStream(InStream, '');
     end;
 
     procedure GetAuthorPhotoRequest(AuthorNo: Code[50]; var Author: Record Authors)
@@ -79,18 +81,20 @@ codeunit 50501 "Open Library API"
     begin
         ReferenceID := 'Author Photo: ' + AuthorNo;
         Query := '/a/olid/' + AuthorNo + '.jpg';
-        if GetImageRequest(Query, InStream) then
-            Author.Photo.ImportStream(InStream, '');
+        GetImageRequest(Query, InStream);
+        Author.Photo.ImportStream(InStream, '');
+        // if GetImageRequest(Query, InStream) then
+        //     Author.Photo.ImportStream(InStream, '');
     end;
 
-    [TryFunction]
+    //[TryFunction]
     local procedure GetImageRequest(Query: Text; var InStream: InStream)
     var
         AATRestHelper: Codeunit "AAT REST Helper";
         HttpClient: HttpClient;
         HttpResponseMessage: HttpResponseMessage;
     begin
-        AATRestHelper.LoadAPIConfig('AAT0006');
+        AATRestHelper.LoadAPIConfig('AAT002');
         HttpClient.Get(AATRestHelper.GetAPIConfigBaseEndpoint() + Query, HttpResponseMessage);
         if HttpResponseMessage.IsSuccessStatusCode then
             HttpResponseMessage.Content.ReadAs(InStream)
@@ -99,7 +103,7 @@ codeunit 50501 "Open Library API"
             Error('Image download failure');
     end;
 
-    [TryFunction]
+    //[TryFunction]
     procedure GetWorksDetailsRequest(WorksKey: Code[50]; var Library: Record Library)
     var
         AATRestHelper: Codeunit "AAT REST Helper";

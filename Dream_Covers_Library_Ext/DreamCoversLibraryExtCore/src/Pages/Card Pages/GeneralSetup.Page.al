@@ -7,7 +7,7 @@ page 50214 "General Page Setup"
     InsertAllowed = false;
     DeleteAllowed = false;
     UsageCategory = Administration;
-    ApplicationArea=all;
+    ApplicationArea = all;
 
 
     layout
@@ -46,11 +46,11 @@ page 50214 "General Page Setup"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Extreme Fine Amount field.', Comment = '%';
                 }
-                field("Primary Key"; Rec."Primary Key")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Primary Key field.', Comment = '%';
-                }
+                // field("Primary Key"; Rec."Primary Key")
+                // {
+                //     ApplicationArea = All;
+                //     ToolTip = 'Specifies the value of the Primary Key field.', Comment = '%';
+                // }
                 field("Book Nos."; Rec."Book Nos.")
                 {
                     ApplicationArea = All;

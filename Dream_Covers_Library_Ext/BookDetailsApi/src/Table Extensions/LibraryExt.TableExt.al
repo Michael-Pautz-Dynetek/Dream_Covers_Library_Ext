@@ -77,5 +77,11 @@ tableextension 50528 "Library Ext" extends Library
             DataClassification = CustomerContent;
             Caption = 'Subject People';
         }
+        field(240; "Image Preview"; Blob)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Image Preview';
+            Subtype = Bitmap;
+        }
     }
 }

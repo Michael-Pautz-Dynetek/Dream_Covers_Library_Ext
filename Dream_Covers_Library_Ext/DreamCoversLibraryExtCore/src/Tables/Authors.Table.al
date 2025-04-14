@@ -74,4 +74,16 @@ table 50214 Authors
         }
     }
 
+    trigger OnDelete()
+    var
+        BooksAuthors: Record BooksAuthors;
+    begin
+        BooksAuthors.SetRange("Author No.", Rec."Author No.");
+        if BooksAuthors.FindSet() then
+            repeat
+                BooksAuthors.Delete();
+                
+            until BooksAuthors.Next() = 0;
+    end;
+
 }
