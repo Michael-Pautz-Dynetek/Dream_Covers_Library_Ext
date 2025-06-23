@@ -108,9 +108,6 @@ codeunit 50501 "Open Library API"
     var
         AATRestHelper: Codeunit "AAT REST Helper";
         ResultObject, DataObject : JsonObject;
-        SubjectArray, PlacesArray, PeopleArray : JsonArray;
-        JsonToken: JsonToken;
-        OutStream: OutStream;
         Query, ReferenceID : Text;
     begin
         ReferenceID := 'Book Details: ' + WorksKey;
@@ -118,27 +115,8 @@ codeunit 50501 "Open Library API"
         SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID);
         // if not SendGetRequest(ResultObject, Query, AATRestHelper, ReferenceID) then
         //     Error(GetLastErrorText());
-        Library.Description.CreateOutStream(OutStream);
-        if ResultObject.Get('description', JsonToken) then
-            if JsonToken.IsObject then
-                //DataObject := JsonToken.AsObject();
-                //Library.Validate(Description, AATJsonHelper.GetJsonTokenAsValue(DataObject, 'value').AsText());
-                //Library.Validate(Description, AATJsonHelper.SelectJsonValueAsText('$.description.value', false));
-                OutStream.WriteText(AATJsonHelper.SelectJsonValueAsText('$.description.value', false))
-            else
-                OutStream.WriteText(AATJsonHelper.SelectJsonValueAsText('$.description', false));
-        // AATJsonHelper.GetJsonObject(ResultObject, 'created', DataObject);
-        // Library.Validate("Date Created", AATJsonHelper.GetJsonTokenAsValue(DataObject, 'value').AsDateTime());
-        Library.Validate("Date Created", AATJsonHelper.SelectJsonValueAsDateTime('$.created.value', false));
-
-        if AATJsonHelper.GetJsonArray(ResultObject, 'subjects', SubjectArray) then
-            FormatArray(Library.Subjects, SubjectArray, true);
-
-        if AATJsonHelper.GetJsonArray(ResultObject, 'subject_places', PlacesArray) then
-            FormatArray(Library."Subject Places", PlacesArray, true);
-
-        if AATJsonHelper.GetJsonArray(ResultObject, 'subject_people', PeopleArray) then
-            FormatArray(Library."Subject People", PeopleArray, true);
+        if not WorkDetailsValidation(Library, ResultObject) then
+            Message('%1 could not be saved to library.', Library.Title);
     end;
 
     procedure GetGeneralAuthorRequest(AuthorKey: Text; AuthorName: Text; var Authors: Record Authors)
@@ -268,6 +246,38 @@ codeunit 50501 "Open Library API"
         foreach JsonToken in ValueArray do
             ResultString += JsonToken.AsValue().AsCode() + '\';
         Field := ResultString;
+    end;
+
+    [TryFunction]
+    local procedure WorkDetailsValidation(var Library: Record Library; var ResultObject: JsonObject)
+    var
+        JsonToken: JsonToken;
+        OutStream: OutStream;
+        SubjectArray: JsonArray;
+        PlacesArray: JsonArray;
+        PeopleArray: JsonArray;
+    begin
+        Library.Description.CreateOutStream(OutStream);
+        if ResultObject.Get('description', JsonToken) then
+            if JsonToken.IsObject then
+                //DataObject := JsonToken.AsObject();
+                //Library.Validate(Description, AATJsonHelper.GetJsonTokenAsValue(DataObject, 'value').AsText());
+                //Library.Validate(Description, AATJsonHelper.SelectJsonValueAsText('$.description.value', false));
+                OutStream.WriteText(AATJsonHelper.SelectJsonValueAsText('$.description.value', false))
+            else
+                OutStream.WriteText(AATJsonHelper.SelectJsonValueAsText('$.description', false));
+        // AATJsonHelper.GetJsonObject(ResultObject, 'created', DataObject);
+        // Library.Validate("Date Created", AATJsonHelper.GetJsonTokenAsValue(DataObject, 'value').AsDateTime());
+        Library.Validate("Date Created", AATJsonHelper.SelectJsonValueAsDateTime('$.created.value', false));
+
+        if AATJsonHelper.GetJsonArray(ResultObject, 'subjects', SubjectArray) then
+            FormatArray(Library.Subjects, SubjectArray, true);
+
+        if AATJsonHelper.GetJsonArray(ResultObject, 'subject_places', PlacesArray) then
+            FormatArray(Library."Subject Places", PlacesArray, true);
+
+        if AATJsonHelper.GetJsonArray(ResultObject, 'subject_people', PeopleArray) then
+            FormatArray(Library."Subject People", PeopleArray, true);
     end;
 
     var

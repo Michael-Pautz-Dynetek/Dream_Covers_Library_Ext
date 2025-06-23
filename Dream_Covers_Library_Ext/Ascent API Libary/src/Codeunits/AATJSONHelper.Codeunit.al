@@ -115,7 +115,6 @@ codeunit 80100 "AAT JSON Helper"
     procedure SelectJsonToken(Path: Text; GiveError: Boolean) JsonToken: JsonToken
     begin
         if not JsonObjectVar.SelectToken(Path, JsonToken) then
-        
             if GiveError then
                 Error('Could not find a token with path %1', Path);
     end;

@@ -17,19 +17,14 @@ codeunit 50503 "Save Books"
             if GuiAllowed then
                 Window.Open(CurrentProcess);
             Library.Init();
-            Library.Validate(Title, TempLibrary.Title);
-            SavedTitles += Library.Title + '\';
-            Library.Validate("Date Added", Today);
-            Library.Validate("Open Library ID", TempLibrary."Open Library ID");
-            //Library.Validate(Author, TempLibrary.Author);
-            Library.Author := TempLibrary.Author;
-            Library.Validate("Author Codes", TempLibrary."Author Codes");
-            OpenLibraryApi.GetBookCoverRequest(TempLibrary."Cover No.", Library);
-            OpenLibraryApi.GetWorksDetailsRequest(TempLibrary."Open Library ID", Library);
-            // if OpenLibraryApi.GetWorksDetailsRequest(TempLibrary."Open Library ID", Library) = false then
-            //     exit;
+            if BookDetailsValidation(TempLibrary, SavedTitles, Library) then begin
+                OpenLibraryApi.GetBookCoverRequest(TempLibrary."Cover No.", Library);
+                OpenLibraryApi.GetWorksDetailsRequest(TempLibrary."Open Library ID", Library);
+                // if OpenLibraryApi.GetWorksDetailsRequest(TempLibrary."Open Library ID", Library) = false then
+                //     exit;
 
-            Library.Insert(true);
+                Library.Insert(true);
+            end;
             Window.Close();
 
             CurrentProcess := 'Saving authors for ' + TempLibrary.Title + '.';
@@ -73,5 +68,17 @@ codeunit 50503 "Save Books"
             BooksAuthors.Validate("Valid Link", true);
             BooksAuthors.Insert(true);
         end;
+    end;
+
+    [TryFunction]
+    local procedure BookDetailsValidation(var TempLibrary: Record Library; var SavedTitles: Text; var Library: Record Library)
+    begin
+        Library.Validate(Title, TempLibrary.Title);
+        SavedTitles += Library.Title + '\';
+        Library.Validate("Date Added", Today);
+        Library.Validate("Open Library ID", TempLibrary."Open Library ID");
+        //Library.Validate(Author, TempLibrary.Author);
+        Library.Author := TempLibrary.Author;
+        Library.Validate("Author Codes", TempLibrary."Author Codes");
     end;
 }

@@ -1,4 +1,5 @@
 {
+    "al.enableCodeActions": true,
     "terminal.integrated.env.windows": {
         "PATH": "C:\\Users\\marnu\\.azurelogicapps\\dependencies\\DotNetSDK;${env:PATH}"
     },

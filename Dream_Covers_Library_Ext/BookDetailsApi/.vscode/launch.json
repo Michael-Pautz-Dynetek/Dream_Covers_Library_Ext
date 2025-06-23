@@ -3,11 +3,11 @@
     "configurations": [
         
         {
-            "name": "Training Server",
+            "name": "BC Training Server",
             "request": "launch",
             "type": "al",
             "environmentType": "OnPrem",
-            "server": "http://trainingserver1",
+            "server": "http://BCTrainingServer",
             "serverInstance": "BC",
             "authentication": "UserPassword",
             "startupObjectId": 9022,

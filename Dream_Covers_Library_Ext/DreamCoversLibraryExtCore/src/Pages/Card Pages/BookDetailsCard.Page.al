@@ -5,6 +5,7 @@ page 50203 "Book Details Card"
     SourceTable = Library;
     Caption = 'Book Details Card';
 
+
     layout
     {
         area(Content)
