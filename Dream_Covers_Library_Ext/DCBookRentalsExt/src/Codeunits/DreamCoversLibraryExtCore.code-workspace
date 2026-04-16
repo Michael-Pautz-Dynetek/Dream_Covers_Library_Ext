@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "../../../DreamCoversLibraryExtCore"
+		},
+		{
+			"path": "../../../BookListReports"
+		},
+		{
+			"path": "../.."
+		},
+		{
+			"path": "../../../BookDetailsApi"
+		},
+		{
+			"path": "../../../Ascent API Libary"
+		}
+	]
+}

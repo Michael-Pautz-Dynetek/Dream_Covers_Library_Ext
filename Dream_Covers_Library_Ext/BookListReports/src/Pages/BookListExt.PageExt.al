@@ -7,8 +7,9 @@ pageextension 50301 "Book List Ext" extends "Book List"
             action("Library Reporting")
             {
                 Image = RelatedInformation;
-                Caption = 'Open Library Reporting Page';
+                Caption = 'Library Reporting Page';
                 ToolTip = 'Open the reporting page of the book list.';
+                ApplicationArea=all;
 
                 trigger OnAction()
                 var
@@ -16,6 +17,12 @@ pageextension 50301 "Book List Ext" extends "Book List"
                 begin
                     ReportList.Run();
                 end;
+            }
+        }
+        addlast(Category_Category5)
+        {
+            actionref("Library Reporting_Promoted"; "Library Reporting")
+            {
             }
         }
     }

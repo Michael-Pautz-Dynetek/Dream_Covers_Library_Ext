@@ -8,7 +8,7 @@ page 50201 "Book List"
     CardPageId = "Book Details Card";
     InsertAllowed = false;
     ModifyAllowed = false;
-
+    Editable = false;
     layout
     {
         area(Content)
@@ -17,47 +17,44 @@ page 50201 "Book List"
             {
                 field(Title; Rec.Title)
                 {
-                    ApplicationArea = All;
+                    ToolTip = 'Specifies the title of the book.';
                 }
-
                 field(Author; Rec.Author)
                 {
-                    ApplicationArea = All;
-                }
+                    ToolTip = 'Specifies the author of the book.';
 
-                field(Rented; Rec.Rented)
-                {
-                    ApplicationArea = All;
                 }
-
                 field(Series; Rec.Series)
                 {
-                    ApplicationArea = All;
+                    ToolTip = 'Specifies the series of the book.';
                 }
-
                 field(Genre; Rec.Genre)
                 {
-                    ApplicationArea = All;
+                    ToolTip = 'Specifies the genre of the book.';
                 }
-
                 field("Book Price"; Rec."Book Price")
                 {
-                    ApplicationArea = All;
+                    ToolTip = 'Specifies the price of the book.';
                 }
-
                 field("Publication Date"; Rec."Publication Date")
                 {
-                    ApplicationArea = All;
+                    ToolTip = 'Specifies the publication date of the book.';
                 }
-
+                field("Date Added"; Rec."Date Added")
+                {
+                    ToolTip = 'Specifies the date the book was added';
+                }
+                field(Rented; Rec.Rented)
+                {
+                    ToolTip = 'Specifies wether the book is currently rented.';
+                }
                 field("Customer Name"; Rec."Customer Name")
                 {
-                    ApplicationArea = All;
+                    ToolTip = 'Specifies the customer who rented the book.';
                 }
-
                 field("Amount Rented"; Rec."Amount Rented")
                 {
-                    ApplicationArea = All;
+                    ToolTip = 'Specifies the amount of times the book has been rented.';
                 }
             }
         }
@@ -69,7 +66,7 @@ page 50201 "Book List"
         {
             action("New Book")
             {
-                Caption = 'Add New Book';
+                Caption = 'Add Book';
                 Image = Add;
                 ToolTip = 'Add a new book to the library.';
 
@@ -108,10 +105,73 @@ page 50201 "Book List"
                     CurrPage.Update();
                 end;
             }
+            action("Clear Book Filters")
+            {
+                Caption = 'Clear Filters';
+                Image = ClearFilter;
+                ToolTip = 'Clear all filters on the current page.';
+
+                trigger OnAction()
+                begin
+                    Rec.Reset();
+                    CurrPage.Update();
+                end;
+            }
+            action(TestLink)
+            {
+                trigger OnAction()
+                begin
+                    OpenSpecifiedView('aa49406f-6f68-4565-b857-496faa0e77aa_Test24872', Page::"Book List");
+                end;
+            }
+
+        }
+        area(Promoted)
+        {
+            group(Category_New)
+            {
+                Caption = 'New';
+
+                actionref("New Book_Promoted"; "New Book")
+                {
+                }
+            }
+            group(Category_Category4)
+            {
+                Caption = 'View/Filter';
+
+                actionref("View 3 Most Rented Books_Promoted"; "View 3 Most Rented Books")
+                {
+                }
+                actionref("Filter Published Date_Promoted"; "Filter Published Date")
+                {
+                }
+                actionref("Clear Book Filters_Promoted"; "Clear Book Filters")
+                {
+                }
+            }
+            group(Category_Category5)
+            {
+                Caption = 'Pages';
+            }
+            group(Category_Category6)
+            {
+                Caption = 'Book Rentals';
+            }
         }
     }
 
     var
         BookMgtOptions: Enum "Book Management Options";
         BookMgt: Codeunit "Book Management";
+
+    local procedure OpenSpecifiedView(ViewID: Text; PageID: Integer)
+    var
+        DefaultView: Text;
+        URL: Text;
+    begin
+        DefaultView := '&view=' + ViewID;
+        URL := GetUrl(CurrentClientType, CompanyName, ObjectType::Page, PageID) + DefaultView;
+        Hyperlink(URL);
+    end;
 }

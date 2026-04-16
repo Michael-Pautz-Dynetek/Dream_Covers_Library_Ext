@@ -20,17 +20,18 @@ codeunit 50213 "Book Management"
         TempLibrary: Record Library temporary;
     begin
         TempLibrary.Init();
-        TempLibrary.Insert(true);
+        TempLibrary.Insert();
         if Page.RunModal(Page::"Book Details Card", TempLibrary) = Action::LookupOK then
             InsertNewBook(TempLibrary);
     end;
 
-    local procedure InsertNewBook(TempLibrary: Record Library temporary)
+    local procedure InsertNewBook(TempLibrary: Record Library)
     var
         NewLibrary: Record Library;
         AddMessage: Label 'You have added "%1" to the table.', Comment = 'Title of the new book.';
     begin
         NewLibrary.Init();
+        TempLibrary.Validate("Date Added", Today);
         NewLibrary := TempLibrary;
         NewLibrary.Insert(true);
         Message(AddMessage, NewLibrary.Title);
@@ -38,7 +39,6 @@ codeunit 50213 "Book Management"
 
     local procedure InsertSequel(CurrentLibrary: Record Library)
     var
-        NewLibrary: Record Library temporary;
         HasSequelMessage: Label '%1 book already has a sequel.', Comment = 'Title of the selected book.';
     begin
         if CurrentLibrary.Sequel <> '' then begin
@@ -46,28 +46,46 @@ codeunit 50213 "Book Management"
             exit;
         end
         else
-            InsertCurrentValues(NewLibrary, CurrentLibrary);
+            InsertCurrentValues(CurrentLibrary);
     end;
 
     local procedure SaveSequel(TempLibrary: Record Library temporary)
     var
         NewLibrary: Record Library;
+        BooksAuthors: Record BooksAuthors;
+        AuthorCodes: List of [Text];
+        Item: Text;
     begin
         NewLibrary.Init();
         NewLibrary := TempLibrary;
+        NewLibrary.Validate("Book No.", '');
+        
         NewLibrary.Insert(true);
+        AuthorCodes := NewLibrary."Author Codes".Split(',');
+        foreach Item in AuthorCodes do begin
+            BooksAuthors.Init();
+            BooksAuthors.Validate("Book No.", NewLibrary."Book No.");
+            BooksAuthors.Validate("Author No.", Item);
+            BooksAuthors.Validate("Valid Link", true);
+            // BooksAuthors.Validate("Author Name",);
+            BooksAuthors.Insert(true);
+        end;
     end;
 
-    local procedure InsertCurrentValues(NewLibrary: Record Library temporary; CurrentLibrary: Record Library)
+    local procedure InsertCurrentValues(CurrentLibrary: Record Library)
+    var
+        NewLibrary: Record Library temporary;
     begin
         NewLibrary.Init();
-        NewLibrary.Validate("Book No.");
-        NewLibrary.Validate(Author, CurrentLibrary.Author);
+        NewLibrary.Validate("Book No.", '1');
+        //NewLibrary.Validate(Author, CurrentLibrary.Author);
+        NewLibrary.Author := CurrentLibrary.Author;
+        NewLibrary.Validate("Author Codes", CurrentLibrary."Author Codes");
         NewLibrary.Validate(Series, CurrentLibrary.Series);
         NewLibrary.Validate(Prequel, CurrentLibrary.Title);
         NewLibrary.Validate("Prequel ID", CurrentLibrary."Book No.");
         NewLibrary.Validate(Genre, CurrentLibrary.Genre);
-        NewLibrary.Insert(true);
+        NewLibrary.Insert();
 
         if Page.RunModal(Page::"Add Sequel Card", NewLibrary) = Action::LookupOK then begin
             SaveSequel(NewLibrary);

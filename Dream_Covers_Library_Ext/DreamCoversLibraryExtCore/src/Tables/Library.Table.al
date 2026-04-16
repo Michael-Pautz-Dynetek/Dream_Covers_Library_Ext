@@ -5,26 +5,47 @@ table 50200 Library
 
     fields
     {
-        field(10; "Book No."; Integer)
+        field(10; "Book No."; Code[20])
         {
             DataClassification = CustomerContent;
             Caption = 'Book No.';
             ToolTip = 'Identification number of the book.';
-            AutoIncrement = true;
+            //TableRelation = BooksAuthors."Book No.";
         }
 
-        field(20; Title; Text[100])
+        field(15; "Open Library ID"; Code[50])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Open Library ID';
+        }
+
+        field(20; Title; Text[2048])
         {
             DataClassification = CustomerContent;
             Caption = 'Title';
             ToolTip = 'Specifies the title of the book.';
         }
 
-        field(30; Author; Text[100])
+        field(30; Author; Text[2048])
         {
             DataClassification = CustomerContent;
             Caption = 'Author';
             ToolTip = 'Specifies the author of the book.';
+
+        }
+
+        field(31; Authors; Text[2048])
+        {
+            Caption = 'Authors';
+            ToolTip = 'Specifies the authors of the book.';
+            FieldClass = FlowField;
+            CalcFormula = lookup(BooksAuthors."Book No." where("Book No." = field("Book No.")));
+        }
+
+        field(35; Description; Blob)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Description';
         }
 
         field(40; Rented; Boolean)
@@ -98,26 +119,65 @@ table 50200 Library
             ToolTip = 'Identification number of the renting customer.';
         }
 
+        field(131; "Author Codes"; Text[1024])
+        {
+            Caption = 'Author Codes';
+            DataClassification = CustomerContent;
+        }
+        field(132; "Cover"; Media)
+        {
+            Caption = 'Cover';
+            DataClassification = CustomerContent;
+        }
+        field(133; "Cover No."; Code[50])
+        {
+            Caption = 'Cover No.';
+            DataClassification = CustomerContent;
+        }
+
         field(140; "Customer Name"; Text[100])
         {
-            Caption = 'Client Name';
+            Caption = 'Customer Name';
             FieldClass = FlowField;
             CalcFormula = lookup(Customer.Name where("No." = field("Customer No.")));
-            ToolTip = 'Specifies the client who rented the book.';
+            ToolTip = 'Specifies the customer who rented the book.';
         }
 
         field(150; "Amount Rented"; Integer)
         {
             DataClassification = CustomerContent;
-            Caption = 'Amount Rented';
+            Caption = 'Total Amount Rented';
             ToolTip = 'Specifies the amount of times the book has been rented.';
         }
+        field(151; "Rented Rank"; Integer)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Rented Rank';
+            ToolTip = 'Specifies the rank of how many times the book has been rented in the last month.';
+        }
+        field(152; "Amount Rented Last Month"; Integer)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Amount Rented Last Month';
+            ToolTip = 'Specifies how many times the book has been rented in the last month.';
+        }
 
-        field(160; "Prequel ID"; Integer)
+        field(160; "Prequel ID"; Code[20])
         {
             DataClassification = CustomerContent;
             Caption = 'Prequel ID';
             ToolTip = 'ID of the prequel book.';
+        }
+        field(170; "Date Added"; Date)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Date Added';
+            Tooltip = 'Specifies the date the book was added.';
+        }
+        field(180; "Date Created"; DateTime)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Date Created';
         }
     }
 
@@ -129,36 +189,49 @@ table 50200 Library
         }
     }
 
+    fieldgroups
+    {
+        fieldgroup(Brick; Author, Title, Rented, "Customer Name", Genre, Cover)
+        {
+
+        }
+    }
+
     trigger OnInsert()
     begin
-
-    end;
-
-    trigger OnModify()
-    begin
-
+        if "Book No." = '' then begin
+            GeneralSetup.Get();
+            GeneralSetup.TestField("Book Nos.");
+            Validate("Book No.", NoSeriesMgt.GetNextNo(GeneralSetup."Book Nos."));
+        end;
     end;
 
     trigger OnDelete()
     var
+        BooksAuthors: Record BooksAuthors;
+    begin
+        if Rec."Prequel ID" <> '' then
+            UpdateSequel();
+
+        BooksAuthors.SetRange("Book No.", Rec."Book No.");
+        if BooksAuthors.FindSet() then
+            repeat
+                BooksAuthors.Delete();
+            until BooksAuthors.Next() = 0;
+    end;
+
+    local procedure UpdateSequel()
+    var
         Library: Record Library;
     begin
-        if Rec."Prequel ID" = 0 then
-            exit
-        else
-            UpdateSequel(Library);
+        if Library.Get(Rec."Prequel ID") then begin
+            Library.Validate(Sequel, '');
+            Library.Modify(true);
+        end;
     end;
 
-    trigger OnRename()
-    begin
-
-    end;
-
-    local procedure UpdateSequel(Library: Record Library)
-    begin
-        Library.Get(Rec."Prequel ID");
-        Library.Validate(Sequel, '');
-        Library.Modify(true);
-    end;
+    var
+        GeneralSetup: Record "Library General Setup";
+        NoSeriesMgt: Codeunit "No. Series";
 
 }

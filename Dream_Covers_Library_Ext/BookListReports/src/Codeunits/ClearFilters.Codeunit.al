@@ -1,10 +1,5 @@
 codeunit 50304 "Clear Filters"
 {
-    trigger OnRun()
-    begin
-
-    end;
-
     procedure ClearAllFilters(var Library: Record Library; var DateFilter: Text; var PriceFilter: Text;
     var RentalFrequency: Text; var InputText: Text; var FilterField: Enum "Field Names")
     var

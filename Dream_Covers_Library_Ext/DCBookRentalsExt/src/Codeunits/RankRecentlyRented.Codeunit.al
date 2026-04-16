@@ -1,0 +1,54 @@
+codeunit 50420 "Rank Recently Rented"
+{
+    trigger OnRun()
+    begin
+        RankBooks();
+    end;
+
+    local procedure RankBooks()
+    begin
+        CalculateAmountRentedPastMonth();
+        SetRank();
+    end;
+
+    local procedure CalculateAmountRentedPastMonth()
+    var
+        Library: Record Library;
+        RentReturnLog: Record "Rent Return Log";
+        OneMonthAgo: DateTime;
+    begin
+        if Library.FindSet() then
+            repeat
+                RentReturnLog.SetRange("Book No.", Library."Book No.");
+                RentReturnLog.SetRange(Type, 'Rent');
+                //OneMonthAgo := CalcDate('-1M', Today) + Time;
+                RentReturnLog.SetRange("Entry Date", CreateDateTime(CalcDate('-1M', Today), Time), CreateDateTime(Today, Time));
+                if RentReturnLog.FindSet() then
+                    Library.Validate("Amount Rented Last Month", RentReturnLog.Count)
+                else
+                    Library.Validate("Amount Rented Last Month", 0);
+                Library.Modify();
+            until Library.Next() = 0;
+    end;
+
+    local procedure SetRank()
+    var
+        Library: Record Library;
+        PreviousRecord: Record Library;
+        Rank: Integer;
+    begin
+        //Library.SetLoadFields("Amount Rented Last Month","Rented Rank",)
+        Library.SetCurrentKey("Amount Rented Last Month");
+        Library.Ascending(false);
+        if Library.FindSet() then
+            repeat
+                if PreviousRecord."Amount Rented Last Month" <> Library."Amount Rented Last Month" then
+                    Library.Validate("Rented Rank", PreviousRecord."Rented Rank" + 1)
+                else
+                    Library.Validate("Rented Rank", PreviousRecord."Rented Rank");
+                Library.Modify();
+                PreviousRecord.Copy(Library);
+            until Library.Next() = 0;
+    end;
+
+}
