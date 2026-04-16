@@ -19,4 +19,14 @@ codeunit 50204 "Most Rented"
             until (Books.Next() = 0) or (Counter = 4);
         Message(MostRentedBooks + Result);
     end;
+
+    procedure OpenSpecifiedView(ViewID: Text; PageID: Integer)
+    var
+        DefaultView: Text;
+        URL: Text;
+    begin
+        DefaultView := '&view=' + ViewID;
+        URL := GetUrl(CurrentClientType, CompanyName, ObjectType::Page, PageID) + DefaultView;
+        Hyperlink(URL);
+    end;
 }

@@ -117,6 +117,13 @@ page 50201 "Book List"
                     CurrPage.Update();
                 end;
             }
+            action(TestLink)
+            {
+                trigger OnAction()
+                begin
+                    OpenSpecifiedView('aa49406f-6f68-4565-b857-496faa0e77aa_Test24872', Page::"Book List");
+                end;
+            }
 
         }
         area(Promoted)
@@ -157,4 +164,14 @@ page 50201 "Book List"
     var
         BookMgtOptions: Enum "Book Management Options";
         BookMgt: Codeunit "Book Management";
+
+    local procedure OpenSpecifiedView(ViewID: Text; PageID: Integer)
+    var
+        DefaultView: Text;
+        URL: Text;
+    begin
+        DefaultView := '&view=' + ViewID;
+        URL := GetUrl(CurrentClientType, CompanyName, ObjectType::Page, PageID) + DefaultView;
+        Hyperlink(URL);
+    end;
 }
